@@ -15,16 +15,19 @@ import background from '../assets/background.png';
 import { useNavigation } from '@react-navigation/native';
 import sendIcon from '../assets/send.png';
 import useKeyboardVisible from '../hooks/useKeyboardVisible.js';
+import { useUser } from '../context/UserContext.js';
 
 
 export default function NicknameScreen() {
-    const [nickname, setNickname] = useState('');
     const navigation = useNavigation();
-
+    const [nicknameInput, setNicknameInput] = useState('');
+    const { setNickname } = useUser();
     const keyboardVisible = useKeyboardVisible();
-
+    
+    
     const handleNext = ()=>{
-        if(nickname.trim()){
+        if(nicknameInput.trim()){
+          setNickname(nicknameInput);
             navigation.navigate('AgeRange')
         }
     };
@@ -54,8 +57,8 @@ export default function NicknameScreen() {
                 style={styles.input}
                 placeholder="What should we call you..."
                 placeholderTextColor="#7F8C8D"
-                value={nickname}
-                onChangeText={setNickname}
+                value={nicknameInput}
+                onChangeText={setNicknameInput}
               />
               {keyboardVisible && (<TouchableOpacity
                 style={styles.sendButton}

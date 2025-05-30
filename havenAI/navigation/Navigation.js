@@ -4,7 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import WelcomeScreen from '../components/WelcomeScreen.js';
 import NicknameScreen from '../components/NicknameScreen.js';
-
+import AgeRangeScreen from '../components/AgeRangeScreen.js';
+import QuizIntroScreen from '../components/QuizIntroScreen.js';
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
@@ -18,7 +19,8 @@ export default function Navigation() {
         >
             <Stack.Screen name="Welcome" component={WelcomeScreen} />
             <Stack.Screen name="Nickname" component={NicknameScreen} />
-            {/*<StackActions.Screen name="AgeRange" component={AgeRangeScreen} /> */}
+            <Stack.Screen name="AgeRange" component={AgeRangeScreen} />
+            <Stack.Screen name="QuizIntroScreen" component={QuizIntroScreen} />
         </Stack.Navigator>
     </NavigationContainer>
   );

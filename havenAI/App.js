@@ -4,6 +4,7 @@ import background from './assets/background.png';
 import {useFonts} from 'expo-font';
 import WelcomeScreen from './components/WelcomeScreen.js';
 import Navigation from './navigation/Navigation.js';
+import { UserProvider } from './context/UserContext.js';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -16,7 +17,9 @@ export default function App() {
   }
 
   return (
-    <Navigation />
+    <UserProvider>
+      <Navigation />
+    </UserProvider>
   );
 };
 
