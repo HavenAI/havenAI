@@ -3,6 +3,7 @@ import chainlit as cl
 import os
 import pandas as pd
 from dotenv import load_dotenv
+from functools import lru_cache
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain_openai import OpenAIEmbeddings
@@ -55,6 +56,8 @@ retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"
 # Loading data - from the google form
 def get_user_info():
     file_path = "user_info.csv"
+    if not os.path.exists(file_path):
+        raise FileNotFoundError("user_info.csv not found. Please make sure the user data is available.")
     df = pd.read_csv(file_path)
     row = df.iloc[0]  # Assuming only one user record
 
@@ -76,7 +79,7 @@ def get_user_info():
         "vape_frequency": row["How many times a day do you typically vape? (Think about this in sessions, not puffs)"],
         "previous_quit_attempt": row["Have you ever tried to quit vaping before?"],
         "craving_feelings": parse_list(row["If you have tried to quit vaping before, how did the cravings feel like? (Select all that apply)"]),
-        "help_preference": parse_list(row["Which of these would help you the most during a craving? (Select all that apply"]),
+        "help_preference": parse_list(row["Which of these would help you the most during a craving? (Select all that apply)"]),
         "support_style": row["How do you want your AI support to feel?"],
         "talk_level": row["How talkative do you want your AI to be?"],
         "vaping_feeling": row["In one word, how does vaping make you feel?"],
@@ -100,6 +103,11 @@ def get_emotion_prefix(text):
         "disgust": "Respond with understanding and compassion.",
         "surprise": "Respond with grounded encouragement."
     }.get(emotion, "Respond in a warm, caring tone.")
+
+# Cache emotion results to improve response time
+@lru_cache(maxsize=128)
+def get_emotion_prefix_cached(text):
+    return get_emotion_prefix(text)
 
 
 
