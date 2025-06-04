@@ -4,6 +4,7 @@ from app.middleware.auth import firebase_auth_dependency
 from app.db import db
 import openai  # or llama.cpp for LLaMA
 from datetime import datetime
+from app.services.chat_services import chat_response
 
 router = APIRouter()
 
@@ -13,19 +14,8 @@ class ChatInput(BaseModel):
 @router.post("/send", dependencies=[Depends(firebase_auth_dependency)])
 async def send_chat(data: ChatInput, request: Request):
     user = request.state.user
+    reply = await chat_response(data.message)
 
-    # Basic OpenAI call
-    openai.api_key = "openai-key"
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You're a motivational quit-vaping coach."},
-            {"role": "user", "content": data.message}
-        ]
-    )
-
-    reply = response['choices'][0]['message']['content']
-    
     db.interventions.insert_one({
         "user_id": user["uid"],
         "prompt": data.message,
@@ -34,3 +24,4 @@ async def send_chat(data: ChatInput, request: Request):
     })
 
     return {"response": reply}
+

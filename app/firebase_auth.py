@@ -4,7 +4,7 @@ import os
 
 
 # Load Firebase Admin SDK credentials
-cred = credentials.Certificate("secrets/firebase-adminsdk.json")  # Path to the .json file
+cred = credentials.Certificate("secrets\firebase-adminsdk.json")  # Path to the .json file
 firebase_admin.initialize_app(cred)
 
 
@@ -14,3 +14,4 @@ def verify_token(id_token: str):
         return decoded_token  # Contains uid, email, etc.
     except Exception as e:
         return None
+
