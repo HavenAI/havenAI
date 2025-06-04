@@ -41,7 +41,7 @@ export default function ProgressScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1D3557',
+    backgroundColor: '#2A6D74',
   },
   contentContainer: {
     flex: 1,

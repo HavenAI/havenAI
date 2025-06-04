@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
-import { ImageBackground, StyleSheet, Text, View,TouchableOpacity } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import background from './assets/background.png';
 import {useFonts} from 'expo-font';
 import WelcomeScreen from './components/WelcomeScreen.js';
 import Navigation from './navigation/Navigation.js';
 import { UserProvider } from './context/UserContext.js';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -17,9 +18,11 @@ export default function App() {
   }
 
   return (
-    <UserProvider>
-      <Navigation />
-    </UserProvider>
+    <SafeAreaProvider>
+      <UserProvider>
+        <Navigation />
+      </UserProvider>
+    </SafeAreaProvider>
   );
 };
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import RecommendedSection from '../../components/RecommendedSection';
 
 export default function CalendarScreen() {
@@ -14,8 +14,19 @@ export default function CalendarScreen() {
     [30, 31, null, null, null, null, null]
   ];
   
-  // Current selected day
-  const selectedDay = 15;
+  // Current selected days - multiple selection to match reference image
+  const [selectedDays, setSelectedDays] = useState([15, 16, 17, 18, 19, 20, 21, 22, 23, 24]);
+  
+  // Handle day selection
+  const handleDayPress = (day) => {
+    if (day === null) return;
+    
+    if (selectedDays.includes(day)) {
+      setSelectedDays(selectedDays.filter(d => d !== day));
+    } else {
+      setSelectedDays([...selectedDays, day]);
+    }
+  };
   
   // Render calendar header
   const renderHeader = () => (
@@ -35,25 +46,27 @@ export default function CalendarScreen() {
       {weeks.map((week, weekIndex) => (
         <View key={weekIndex} style={styles.weekRow}>
           {week.map((day, dayIndex) => (
-            <View 
+            <TouchableOpacity 
               key={dayIndex} 
               style={[
                 styles.dayCell,
-                day === selectedDay && styles.selectedDayCell,
+                selectedDays.includes(day) && styles.selectedDayCell,
                 day === null && styles.emptyCell
               ]}
+              onPress={() => handleDayPress(day)}
+              disabled={day === null}
             >
               {day !== null && (
                 <Text 
                   style={[
                     styles.dayText,
-                    day === selectedDay && styles.selectedDayText
+                    selectedDays.includes(day) && styles.selectedDayText
                   ]}
                 >
                   {day}
                 </Text>
               )}
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       ))}
@@ -81,7 +94,7 @@ export default function CalendarScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1D3557',
+    backgroundColor: '#2A6D74',
   },
   contentContainer: {
     flex: 1,
@@ -128,6 +141,7 @@ const styles = StyleSheet.create({
   },
   selectedDayCell: {
     backgroundColor: '#66CDAA',
+    elevation: 2,
   },
   emptyCell: {
     backgroundColor: 'transparent',
@@ -140,6 +154,7 @@ const styles = StyleSheet.create({
   selectedDayText: {
     color: '#1D3557',
     fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
   },
   dotIndicator: {
     flexDirection: 'row',

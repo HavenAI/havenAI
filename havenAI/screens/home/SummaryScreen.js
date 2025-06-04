@@ -32,7 +32,7 @@ export default function SummaryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1D3557',
+    backgroundColor: '#2A6D74',
   },
   contentContainer: {
     flex: 1,
@@ -43,8 +43,8 @@ const styles = StyleSheet.create({
   infoText: {
     color: '#fff',
     fontFamily: 'Poppins',
-    fontSize: 16,
-    marginBottom: 20,
+    fontSize: 14,
+    marginBottom: 10,
     textAlign: 'center',
   },
   counterContainer: {
@@ -53,21 +53,21 @@ const styles = StyleSheet.create({
   counterNumber: {
     color: '#66CDAA',
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 150,
-    lineHeight: 160,
+    fontSize: 120,
+    lineHeight: 130,
   },
   counterLabel: {
     color: '#fff',
     fontFamily: 'Poppins',
-    fontSize: 22,
-    marginTop: -10,
+    fontSize: 18,
+    marginTop: -5,
   },
   resetButton: {
     backgroundColor: '#fff',
-    paddingHorizontal: 24,
-    paddingVertical: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
     borderRadius: 20,
-    marginTop: 20,
+    marginTop: 15,
   },
   resetButtonText: {
     color: '#1D3557',
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   dotIndicator: {
     flexDirection: 'row',
-    marginTop: 20,
+    marginTop: 15,
   },
   dot: {
     width: 8,

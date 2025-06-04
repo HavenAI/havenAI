@@ -1,16 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function RecommendedSection() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Recommended</Text>
       
-      <TouchableOpacity style={styles.recommendedCard}>
-        <Text style={styles.cardText}>Practice Meditation</Text>
-        <View style={styles.avatarContainer}>
-         
-        </View>
+      <TouchableOpacity activeOpacity={0.8}>
+        <LinearGradient
+          colors={['#1E5A60', '#2A9D8F']}
+          style={styles.recommendedCard}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Text style={styles.cardText}>Practice Meditation</Text>
+        </LinearGradient>
       </TouchableOpacity>
     </View>
   );
@@ -18,31 +23,30 @@ export default function RecommendedSection() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F8F0E3', // Creamy off-white
     paddingVertical: 20,
     paddingHorizontal: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
   title: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 18,
-    color: '#1D3557',
+    fontSize: 20,
+    color: '#264653', // Darker teal/blue
     marginBottom: 15,
   },
   recommendedCard: {
-    backgroundColor: '#2A9D8F',
-    borderRadius: 12,
-    padding: 20,
-    flexDirection: 'row',
+    borderRadius: 15,
+    paddingVertical: 25,
+    paddingHorizontal: 20,
     alignItems: 'center',
-    justifyContent: 'space-between',
-    height: 70,
+    justifyContent: 'center',
+    minHeight: 100, // Increased height
   },
   cardText: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Poppins-Medium',
     fontSize: 18,
     color: '#FFFFFF',
+    textAlign: 'center',
   },
- 
 });
