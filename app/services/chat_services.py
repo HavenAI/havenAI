@@ -1,9 +1,9 @@
 from langchain_openai import ChatOpenAI
+from fastapi.security import HTTPAuthorizationCredentials
 from app.vectorstore.retriever import retriever
 from app.services.emotion import detect_emotion, emotion_prompt_prefix
-# from app.services.summarization import summarize_text
 from app.services.prompt import build_prompt
-from app.models.user import get_user_profile
+from app.services.user_quiz import get_quiz_data
 from app.config import settings
 
 
@@ -11,8 +11,8 @@ llm = ChatOpenAI(model="gpt-4-turbo", openai_api_key=settings.OPENAI_API_KEY)
 
 chat_history = []
 
-async def chat_response(user_message: str):
-    user_profile = get_user_profile()
+async def chat_response(user_message: str, credentials: HTTPAuthorizationCredentials):
+    user_profile = get_quiz_data()
     talk_level = user_profile['talk_level']
     emotion = detect_emotion(user_message)
     prefix = emotion_prompt_prefix(emotion)
