@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react';
-import { View, Text, StyleSheet , KeyboardAvoidingView, LayoutAnimation, UIManager, Platform, TouchableWithoutFeedback, ScrollView, Keyboard} from 'react-native';
+import { View, StyleSheet , KeyboardAvoidingView, LayoutAnimation, Platform, TouchableWithoutFeedback, ScrollView, Keyboard} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import useKeyboardVisible from '../hooks/useKeyboardVisible';
 import COLORS from '../constants/colors';
@@ -9,7 +9,6 @@ import { useUser } from '../context/UserContext.js';
 import allQuestions from './data/allQuestions.js';
 import UserBubble from './common/UserBubble.js';
 import OptionButton from './common/OptionButton.js';
-
 
 export default function QuizIntroScreen() {
     const {nickname} = useUser();
@@ -34,11 +33,12 @@ export default function QuizIntroScreen() {
 
     // Animate new messages and scroll
     useEffect(() => {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setTimeout(() => {
-        scrollViewRef.current?.scrollToEnd({animated: true})
-        },50);
-    },[messages])
+    const timeout = setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100); // Give layout a bit of breathing room
+    return () => clearTimeout(timeout);
+}, [messages]);
+
 
     const addTypingAndMessage = (text, callback) => {
         setIsBotTyping(true);

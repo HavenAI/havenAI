@@ -22,8 +22,8 @@ function WelcomeScreen() {
             </View>
             </View>
 
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Nickname')}>
-            <Text style={styles.buttonText}>Continue</Text>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('LoginScreen')}>
+            <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
         </View>
         </ImageBackground>

@@ -118,6 +118,32 @@ const quizSections = [
           ]
         },
         {
+          id: "calmingThings",
+          type: "text",
+          question: "What typically makes you feel calm or safe?"
+        },
+        {
+          id: "stressTriggers",
+          type: "text",
+          question: "What tends to trigger stress or overwhelm for you?"
+        },
+        {
+          id: "relaxingSounds",
+          type: "text",
+          question: "Do certain sounds or music genres help you relax or stay focused?"
+        },
+        {
+          id: "mindfulnessUse",
+          type: "radio",
+          question: "Do you currently use any mindfulness, journaling, or breathing techniques?",
+          options: ["Yes", "No", "Maybe"]
+        },
+        {
+          id: "mindfulnessDetails",
+          type: "text",
+          question: "Could you describe the types of journaling or breath work that you are familiar with..."
+        },
+        {
           id: "tone",
           type: "radio",
           question: "How do you want your AI support to feel?",
@@ -138,6 +164,19 @@ const quizSections = [
             "I want full conversations"
           ]
         },
+        {
+          id: "checkinFrequency",
+          type: "radio",
+          question: "How often would you like me to check-in on your mood, cravings and triggers?",
+          options: [
+            "Hourly",
+            "3 times a day",
+            "2 times a day",
+            "Daily",
+            "Weekly"
+          ]
+        },
+  
         {
           id: "vapeFeeling",
           type: "text",
