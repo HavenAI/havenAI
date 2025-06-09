@@ -3,6 +3,8 @@ from pydantic import BaseModel
 from datetime import datetime
 from app.middleware.auth import firebase_auth_dependency
 from app.db import db
+from app.services.log_service import insert_log
+
 
 router = APIRouter()
 
@@ -15,15 +17,22 @@ class CravingLog(BaseModel):
 @router.post("/craving", dependencies=[Depends(firebase_auth_dependency)])
 async def log_craving(data: CravingLog, request: Request):
     user = request.state.user
-    db.logs.insert_one({
+
+    log = {
         "user_id": user["uid"],
         "type": "craving",
         "timestamp": data.timestamp,
         "mood": data.mood,
         "location": data.location,
-        "intensity": data.intensity
-    })
-    return {"message": "Craving logged"}
+        "intensity": data.intensity,
+        "nrt_type": None,
+        "dosage_mg": None
+    }
+
+    insert_log(log)
+
+    return {"message": "Craving logged successfully"}
+
 
 class VapeLog(BaseModel):
     timestamp: datetime
@@ -33,14 +42,23 @@ class VapeLog(BaseModel):
 @router.post("/vape", dependencies=[Depends(firebase_auth_dependency)])
 async def log_vape(data: VapeLog, request: Request):
     user = request.state.user
-    db.logs.insert_one({
+
+    log = {
         "user_id": user["uid"],
         "type": "vape",
         "timestamp": data.timestamp,
         "location": data.location,
-        "reason": data.reason
-    })
+        "reason": data.reason,
+        "mood": None,
+        "intensity": None,
+        "nrt_type": None,
+        "dosage_mg": None
+    }
+
+    insert_log(log)
+
     return {"message": "Vape event logged"}
+
 
 class NRTLog(BaseModel):
     timestamp: datetime
@@ -50,14 +68,22 @@ class NRTLog(BaseModel):
 @router.post("/nrt", dependencies=[Depends(firebase_auth_dependency)])
 async def log_nrt(data: NRTLog, request: Request):
     user = request.state.user
-    db.logs.insert_one({
+
+    log = {
         "user_id": user["uid"],
         "type": "nrt",
         "timestamp": data.timestamp,
         "nrt_type": data.type,
-        "dosage_mg": data.dosage_mg
-    })
+        "dosage_mg": data.dosage_mg,
+        "location": None,
+        "mood": None,
+        "intensity": None
+    }
+
+    insert_log(log)
+
     return {"message": "Nicotine replacement use logged"}
+
 
 @router.get("/user/progress", dependencies=[Depends(firebase_auth_dependency)])
 async def get_progress(request: Request):
