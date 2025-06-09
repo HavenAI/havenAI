@@ -65,10 +65,11 @@ export default function CalendarScreen() {
     ];
     return monthNames[currentMonth];
   };
-  
-  // Render calendar header
+    // Render calendar header
   const renderHeader = () => (
     <View style={styles.calendarHeader}>
+      <Text style={styles.titleText}>Nicotine-Free Tracker</Text>
+      <Text style={styles.subtitleText}>One day at a time. Track each victory by tapping the calendar.</Text>
       <Text style={styles.monthYearText}>{getMonthName()} {currentYear}</Text>
       <View style={styles.daysHeader}>
         {days.map((day, index) => (
@@ -146,11 +147,23 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 20,
     paddingBottom: 40,
+  }, 
+  titleText: {
+    color: '#fff',
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 8,
   },
-  calendarHeader: {
-    marginBottom: 15,
+  subtitleText: {
+    color: 'rgba(255, 255, 255, 0.8)',
+    fontFamily: 'Poppins',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    lineHeight: 20,
   },
   monthYearText: {
     color: '#fff',
