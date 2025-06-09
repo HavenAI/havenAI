@@ -134,3 +134,25 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+
+# Virtual environment
+venv/
+.env
+
+# FastAPI logs or debug files
+*.log
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# Secrets
+secrets/
