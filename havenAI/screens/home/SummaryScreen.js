@@ -1,19 +1,28 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import RecommendedSection from '../../components/RecommendedSection';
+import { useUser } from '../../context/UserContext';
 
 export default function SummaryScreen() {
+  const { selectedDays, setSelectedDays } = useUser();
+  
+  // Calculate the number of nicotine-free days
+  const nicotineFreeDays = selectedDays.length;
+  
+  // Handle reset button press
+  const handleReset = () => {
+    setSelectedDays([]);
+  };
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Text style={styles.infoText}>You've been nicotine free for</Text>
-        
-        <View style={styles.counterContainer}>
-          <Text style={styles.counterNumber}>10</Text>
+          <View style={styles.counterContainer}>
+          <Text style={styles.counterNumber}>{nicotineFreeDays}</Text>
           <Text style={styles.counterLabel}>days</Text>
         </View>
         
-        <TouchableOpacity style={styles.resetButton}>
+        <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
           <Text style={styles.resetButtonText}>Reset</Text>
         </TouchableOpacity>
         
@@ -43,15 +52,15 @@ const styles = StyleSheet.create({
   infoText: {
     color: '#fff',
     fontFamily: 'Poppins',
-    fontSize: 14,
-    marginBottom: 10,
+    fontSize: 16,
+    marginBottom: 45,
     textAlign: 'center',
   },
   counterContainer: {
     alignItems: 'center',
   },
   counterNumber: {
-    color: '#66CDAA',
+    color: '#8AF0DC',
     fontFamily: 'Poppins-SemiBold',
     fontSize: 120,
     lineHeight: 130,
@@ -67,7 +76,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 8,
     borderRadius: 20,
-    marginTop: 15,
+    marginTop: 20,
+    marginBottom: 10,
   },
   resetButtonText: {
     color: '#1D3557',

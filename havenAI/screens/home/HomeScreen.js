@@ -15,14 +15,16 @@ const Stack = createNativeStackNavigator();
 function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { paddingTop: Math.max(topInset, 10) }]}>
+      <View style={[styles.header, { paddingTop: topInset, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', height: 112, backgroundColor: '#1C454F' }]}>
         <View style={styles.greetingContainer}>
           <Text style={styles.greeting}>Good morning</Text>
-          <Text style={styles.username}>Jamie</Text>
         </View>
-        <TouchableOpacity>
-          <Ionicons name="person-outline" size={24} color="#fff" style={styles.profileIcon} />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
+          <Text style={styles.username}>Jamie</Text>
+          <TouchableOpacity style={styles.profileIcon}>
+            <Ionicons name="person-outline" size={24} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </View>
       
       <View style={styles.tabBar}>
@@ -110,13 +112,14 @@ export default function HomeScreen() {
 
           <View style={styles.avatarOuterContainer}>
             <TouchableOpacity style={styles.avatarButton} onPress={() => setActiveBottomTab('Talk')}> 
+              <View style={styles.avatarBackgroundShape} />
               <Image
-                source={require('../../assets/avatarimg.png')}
+                  source={require('../../assets/avatarimg.png')}
                 style={styles.avatarImage}
               />
               <Text style={[
                   styles.bottomTabText,
-                  styles.avatarButtonText,
+                  styles.avatarButtonText, // Central avatar text might need specific styling
                   activeBottomTab === 'Talk' && styles.activeBottomTabText
                 ]}
               >
@@ -163,7 +166,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#2A6D74', // Main teal background
+    backgroundColor: '#276270', // Main teal background
   },
   container: {
     flex: 1,
@@ -175,7 +178,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     paddingBottom: 10,
-    height: 50, // Fixed height for app bar to match reference image
   },
   greetingContainer: {
     flexDirection: 'row',
@@ -186,19 +188,18 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins',
     fontSize: 14,
     marginRight: 5,
-  },
-  username: {
-    color: '#fff',
+  },  username: {
+    color: '#8AF0DC',
     fontFamily: 'Poppins-SemiBold',
     fontSize: 14,
   },
   profileIcon: {
     marginLeft: 'auto',
-  },
-  tabBar: {
+  },  tabBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     paddingHorizontal: 20,
+    paddingVertical: 18,
     marginBottom: 5,
   },
   tab: {
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 3,
-    backgroundColor: '#fff',
+    backgroundColor: '#8AF0DC',
     borderRadius: 1.5,
   },
   tabContent: {
@@ -236,8 +237,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingHorizontal: 5, // Reduced horizontal padding
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
   },
   bottomTab: {
     alignItems: 'center',
@@ -252,31 +251,38 @@ const styles = StyleSheet.create({
   },
   activeBottomTabText: {
     color: '#FFFFFF', // White for active text
-    fontFamily: 'Poppins-SemiBold', // Changed from Poppins-Medium
-  },
-  avatarOuterContainer: {
+     // Changed from Poppins-Medium
+      },
+    avatarOuterContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 70, // Width for the avatar area
+    width: 40, // Width for the avatar area
     position: 'relative', // For positioning the background shape
+    marginBottom: -50, // Adjusted to match reference design
   },
   avatarButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    // position: 'relative',
-    // bottom: 0,
     position: 'absolute',
-    top: -60, // Adjusted to position the avatar above the bottom tab bar
+    bottom: 15, // Adjusted to make avatar pop up more like in the reference design
     zIndex: 1,
   },
+  // avatarBackgroundShape: {
+  //   position: 'absolute',
+  //   bottom: -10, // Adjusted position to match reference design
+  //   width: 80, // Width of the purple shape
+  //   height: 40, // Height of the purple shape
+  //   backgroundColor: '#C3B1E1', // Light purple from target
+  //   borderRadius: 20, // Rounded corners for the shape
+  //   zIndex: 0,
+  // },
   avatarImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    borderWidth: 2,
-    borderColor: '#fff',
-    zIndex: 2,
-    backgroundColor: '#2A6D74', // Match the main teal background
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    borderWidth: 3,
+    borderColor: '#264653', // Match bottom bar background for a seamless look
+    zIndex: 2, // Ensure avatar is above its background shape
   },
   avatarButtonText: {
     // Specific styling for the text under the avatar if different from other tabs

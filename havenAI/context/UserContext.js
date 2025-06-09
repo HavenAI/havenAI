@@ -6,9 +6,17 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
     const [nickname, setNickname] = useState('');
     const [ageRange, setAgeRange] = useState('');
+    const [selectedDays, setSelectedDays] = useState([]);
 
     return(
-        <UserContext.Provider value={{ nickname, setNickname, ageRange, setAgeRange}}>
+        <UserContext.Provider value={{ 
+            nickname, 
+            setNickname, 
+            ageRange, 
+            setAgeRange,
+            selectedDays,
+            setSelectedDays
+        }}>
             {children}
         </UserContext.Provider>
     )

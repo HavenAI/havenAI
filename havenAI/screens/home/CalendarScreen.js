@@ -1,25 +1,49 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import RecommendedSection from '../../components/RecommendedSection';
+import { useUser } from '../../context/UserContext';
 
 export default function CalendarScreen() {
-  // Calendar data for May 2025
+  const { selectedDays, setSelectedDays } = useUser();
+  // Get current date
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth();
+  const currentDay = currentDate.getDate();
+  
+  // Calendar data - dynamic based on current month
   const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  const weeks = [
-    [null, null, null, null, null, null, 1],
-    [2, 3, 4, 5, 6, 7, 8],
-    [9, 10, 11, 12, 13, 14, 15],
-    [16, 17, 18, 19, 20, 21, 22],
-    [23, 24, 25, 26, 27, 28, 29],
-    [30, 31, null, null, null, null, null]
-  ];
   
-  // Current selected days - multiple selection to match reference image
-  const [selectedDays, setSelectedDays] = useState([15, 16, 17, 18, 19, 20, 21, 22, 23, 24]);
+  // Generate calendar weeks dynamically
+  const generateCalendarWeeks = () => {
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+    const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+    const firstDayWeekday = (firstDayOfMonth.getDay() + 6) % 7; // Convert Sunday=0 to Monday=0
+    const daysInMonth = lastDayOfMonth.getDate();
+    
+    const weeks = [];
+    let currentWeek = new Array(7).fill(null);
+    
+    // Fill in the days
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dayIndex = (firstDayWeekday + day - 1) % 7;
+      
+      if (dayIndex === 0 && day > 1) {
+        weeks.push(currentWeek);
+        currentWeek = new Array(7).fill(null);
+      }
+      
+      currentWeek[dayIndex] = day;
+    }
+    
+    weeks.push(currentWeek);
+    return weeks;
+  };
+    const weeks = generateCalendarWeeks();
   
-  // Handle day selection
+  // Handle day selection - only allow past and current days
   const handleDayPress = (day) => {
-    if (day === null) return;
+    if (day === null || day > currentDay) return; // Prevent future day selection
     
     if (selectedDays.includes(day)) {
       setSelectedDays(selectedDays.filter(d => d !== day));
@@ -28,10 +52,24 @@ export default function CalendarScreen() {
     }
   };
   
+  // Check if a day is in the future
+  const isFutureDay = (day) => {
+    return day !== null && day > currentDay;
+  };
+  
+  // Get month name
+  const getMonthName = () => {
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    return monthNames[currentMonth];
+  };
+  
   // Render calendar header
   const renderHeader = () => (
     <View style={styles.calendarHeader}>
-      <Text style={styles.monthYearText}>May 2025</Text>
+      <Text style={styles.monthYearText}>{getMonthName()} {currentYear}</Text>
       <View style={styles.daysHeader}>
         {days.map((day, index) => (
           <Text key={index} style={styles.dayHeaderText}>{day}</Text>
@@ -39,35 +77,44 @@ export default function CalendarScreen() {
       </View>
     </View>
   );
-  
-  // Render calendar days
+    // Render calendar days
   const renderCalendarDays = () => (
     <View style={styles.calendarGrid}>
       {weeks.map((week, weekIndex) => (
         <View key={weekIndex} style={styles.weekRow}>
-          {week.map((day, dayIndex) => (
-            <TouchableOpacity 
-              key={dayIndex} 
-              style={[
-                styles.dayCell,
-                selectedDays.includes(day) && styles.selectedDayCell,
-                day === null && styles.emptyCell
-              ]}
-              onPress={() => handleDayPress(day)}
-              disabled={day === null}
-            >
-              {day !== null && (
-                <Text 
-                  style={[
-                    styles.dayText,
-                    selectedDays.includes(day) && styles.selectedDayText
-                  ]}
-                >
-                  {day}
-                </Text>
-              )}
-            </TouchableOpacity>
-          ))}
+          {week.map((day, dayIndex) => {
+            const isSelected = selectedDays.includes(day);
+            const isFuture = isFutureDay(day);
+            const isToday = day === currentDay;
+            
+            return (
+              <TouchableOpacity 
+                key={dayIndex} 
+                style={[
+                  styles.dayCell,
+                  isSelected && styles.selectedDayCell,
+                  day === null && styles.emptyCell,
+                  isFuture && styles.futureDayCell,
+                  isToday && styles.todayCell
+                ]}
+                onPress={() => handleDayPress(day)}
+                disabled={day === null || isFuture}
+              >
+                {day !== null && (
+                  <Text 
+                    style={[
+                      styles.dayText,
+                      isSelected && styles.selectedDayText,
+                      isFuture && styles.futureDayText,
+                      isToday && styles.todayText
+                    ]}
+                  >
+                    {day}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            );
+          })}
         </View>
       ))}
     </View>
@@ -150,10 +197,25 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: 'Poppins',
     fontSize: 14,
-  },
-  selectedDayText: {
+  },  selectedDayText: {
     color: '#1D3557',
     fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold',
+  },
+  futureDayCell: {
+    backgroundColor: 'transparent',
+    opacity: 0.3,
+  },
+  futureDayText: {
+    color: 'rgba(255, 255, 255, 0.3)',
+    fontFamily: 'Poppins',
+  },
+  todayCell: {
+    borderWidth: 2,
+    borderColor: '#8AF0DC',
+  },
+  todayText: {
+    color: '#8AF0DC',
     fontFamily: 'Poppins-SemiBold',
   },
   dotIndicator: {
