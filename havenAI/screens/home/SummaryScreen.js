@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import RecommendedSection from '../../components/RecommendedSection';
 import { useUser } from '../../context/UserContext';
 
@@ -8,10 +8,23 @@ export default function SummaryScreen() {
   
   // Calculate the number of nicotine-free days
   const nicotineFreeDays = selectedDays.length;
-  
-  // Handle reset button press
+    // Handle reset button press
   const handleReset = () => {
-    setSelectedDays([]);
+    Alert.alert(
+      "Reset Nicotine-Free Streak?",
+      "This will untick all calendar days and reset your streak to 0. This can't be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Reset",
+          style: "destructive",
+          onPress: () => setSelectedDays([])
+        }
+      ]
+    );
   };
   return (
     <View style={styles.container}>
