@@ -8,10 +8,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SummaryScreen from './SummaryScreen';
 import ProgressScreen from './ProgressScreen';
 import CalendarScreen from './CalendarScreen';
+import CutbackScreen from './CutbackScreen';
+import SessionsScreen from './SessionsScreen';
 
 const Stack = createNativeStackNavigator();
 
-// Custom Tab Navigator for Summary, Progress, Calendar
+// Custom Tab Navigator for Summary, Progress, Calendar, Cutback, and Sessions
 function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
   return (
     <View style={styles.container}>
@@ -51,12 +53,30 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
           <Text style={[styles.tabText, activeTab === 'Calendar' && styles.activeTabText]}>Calendar</Text>
           {activeTab === 'Calendar' && <View style={styles.tabIndicator} />}
         </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={[styles.tab, activeTab === 'Cutback' && styles.activeTab]} 
+          onPress={() => setActiveTab('Cutback')}
+        >
+          <Text style={[styles.tabText, activeTab === 'Cutback' && styles.activeTabText]}>Cutback</Text>
+          {activeTab === 'Cutback' && <View style={styles.tabIndicator} />}
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={[styles.tab, activeTab === 'Sessions' && styles.activeTab]} 
+          onPress={() => setActiveTab('Sessions')}
+        >
+          <Text style={[styles.tabText, activeTab === 'Sessions' && styles.activeTabText]}>Sessions</Text>
+          {activeTab === 'Sessions' && <View style={styles.tabIndicator} />}
+        </TouchableOpacity>
       </View>
       
       <View style={styles.tabContent}>
         {activeTab === 'Summary' && <SummaryScreen />}
         {activeTab === 'Progress' && <ProgressScreen />}
         {activeTab === 'Calendar' && <CalendarScreen />}
+        {activeTab === 'Cutback' && <CutbackScreen />}
+        {activeTab === 'Sessions' && <SessionsScreen />}
       </View>
     </View>
   );
@@ -197,20 +217,21 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
   },  tabBar: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 20,
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
     paddingVertical: 18,
     marginBottom: 5,
   },
   tab: {
     paddingVertical: 10,
+    paddingHorizontal: 5,
     position: 'relative',
   },
   activeTab: {},
   tabText: {
     color: 'rgba(255, 255, 255, 0.7)',
     fontFamily: 'Poppins',
-    fontSize: 14,
+    fontSize: 12,
   },
   activeTabText: {
     color: '#fff',

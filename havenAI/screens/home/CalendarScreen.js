@@ -69,7 +69,7 @@ export default function CalendarScreen() {
   const renderHeader = () => (
     <View style={styles.calendarHeader}>
       <Text style={styles.titleText}>Nicotine-Free Tracker</Text>
-      <Text style={styles.subtitleText}>One day at a time. Track each victory by tapping the calendar.</Text>
+      {/* <Text style={styles.subtitleText}>One day at a time. Track each victory by tapping the calendar.</Text> */}
       <Text style={styles.monthYearText}>{getMonthName()} {currentYear}</Text>
       <View style={styles.daysHeader}>
         {days.map((day, index) => (
@@ -131,6 +131,8 @@ export default function CalendarScreen() {
           <View style={styles.dot} />
           <View style={styles.dot} />
           <View style={[styles.dot, styles.activeDot]} />
+          <View style={styles.dot} />
+          <View style={styles.dot} />
         </View>
       </View>
       
@@ -152,19 +154,19 @@ const styles = StyleSheet.create({
   titleText: {
     color: '#fff',
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 20,
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtitleText: {
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontFamily: 'Poppins',
-    fontSize: 14,
+    fontSize: 18,
     textAlign: 'center',
     marginBottom: 20,
-    paddingHorizontal: 10,
-    lineHeight: 20,
   },
+  // subtitleText: {
+  //   color: 'rgba(255, 255, 255, 0.8)',
+  //   fontFamily: 'Poppins',
+  //   fontSize: 14,
+  //   textAlign: 'center',
+  //   marginBottom: 20,
+  //   paddingHorizontal: 10,
+  //   lineHeight: 20,
+  // },
   monthYearText: {
     color: '#fff',
     fontFamily: 'Poppins-SemiBold',

@@ -43,6 +43,8 @@ export default function SummaryScreen() {
           <View style={[styles.dot, styles.activeDot]} />
           <View style={styles.dot} />
           <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={styles.dot} />
         </View>
       </View>
       
