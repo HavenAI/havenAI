@@ -7,6 +7,18 @@ export const UserProvider = ({ children }) => {
     const [nickname, setNickname] = useState('');
     const [ageRange, setAgeRange] = useState('');
     const [selectedDays, setSelectedDays] = useState([]);
+    const [sessionsData, setSessionsData] = useState([
+        { day: 'M', count: 0 },
+        { day: 'T', count: 0 },
+        { day: 'W', count: 0 },
+        { day: 'T', count: 0 },
+        { day: 'F', count: 0 },
+        { day: 'S', count: 0 },
+        { day: 'S', count: 0 }
+    ]);
+    const [cutbackDays, setCutbackDays] = useState(0);
+    const [lastCutbackDate, setLastCutbackDate] = useState('');
+    const [filledDays, setFilledDays] = useState([]);
 
     return(
         <UserContext.Provider value={{ 
@@ -15,7 +27,15 @@ export const UserProvider = ({ children }) => {
             ageRange, 
             setAgeRange,
             selectedDays,
-            setSelectedDays
+            setSelectedDays,
+            sessionsData,
+            setSessionsData,
+            cutbackDays,
+            setCutbackDays,
+            lastCutbackDate,
+            setLastCutbackDate,
+            filledDays,
+            setFilledDays
         }}>
             {children}
         </UserContext.Provider>

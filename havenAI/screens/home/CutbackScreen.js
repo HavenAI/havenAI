@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import RecommendedSection from '../../components/RecommendedSection';
+import { useUser } from '../../context/UserContext';
 
 export default function CutbackScreen() {
-  // You can adjust the number of days based on your actual data
-  const daysAgo = 20;
+  // Get dynamic cutback days from context
+  const { cutbackDays } = useUser();
 
   return (
     <View style={styles.container}>
@@ -12,7 +13,7 @@ export default function CutbackScreen() {
         <Text style={styles.infoText}>You started cutting back</Text>
         
         <View style={styles.counterContainer}>
-          <Text style={styles.counterNumber}>{daysAgo}</Text>
+          <Text style={styles.counterNumber}>{cutbackDays}</Text>
           <Text style={styles.counterLabel}>days ago</Text>
         </View>
         

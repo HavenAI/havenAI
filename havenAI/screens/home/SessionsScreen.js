@@ -1,50 +1,158 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, PanResponder, TouchableWithoutFeedback } from 'react-native';
 import RecommendedSection from '../../components/RecommendedSection';
+import { useUser } from '../../context/UserContext';
 
 export default function SessionsScreen() {
-  // Sample data for the sessions per day (corresponding to the second image)
-  const sessionsData = [
-    { day: 'M', count: 15 },
-    { day: 'T', count: 12 },
-    { day: 'W', count: 10 },
-    { day: 'T', count: 13 },
-    { day: 'F', count: 10 },
-    { day: 'S', count: 7 },
-    { day: 'S', count: 5 }
-  ];
+  // Maximum baseline for all bars
+  const MAX_BASELINE = 20;
+    // Get shared state from context
+  const { 
+    sessionsData, 
+    setSessionsData,
+    cutbackDays,
+    setCutbackDays,
+    filledDays,
+    setFilledDays
+  } = useUser();
   
-  // Find the maximum count for scaling the bars
-  const maxCount = Math.max(...sessionsData.map(item => item.count));
+  // Get current date information
+  const currentDate = new Date();
+  const currentDay = currentDate.getDay(); // 0 = Sunday, 1 = Monday, etc.
   
-  // Current day's highlight (assuming 'S' is the current day based on the image)
-  const currentDayIndex = 6; // Sunday (last bar in the image)
+  // Convert Sunday (0) to index 6, and shift Monday to index 0
+  const getCurrentDayIndex = () => {
+    return currentDay === 0 ? 6 : currentDay - 1;
+  };
+  const currentDayIndex = getCurrentDayIndex();
+  
+  // Helper function to check if a day is accessible (past or current)
+  const isDayAccessible = (dayIndex) => {
+    return dayIndex <= currentDayIndex; // Only past and current days
+  };
+  
+  // Track interaction states
+  const [activeBarIndex, setActiveBarIndex] = useState(null);
+  const [startY, setStartY] = useState(0);
 
   const renderBar = (item, index) => {
-    // Calculate bar height as a percentage of the maximum
-    const barHeight = (item.count / maxCount) * 100;
     const isCurrentDay = index === currentDayIndex;
+    const isAccessible = isDayAccessible(index); // Past or current days only
+    const isFutureDay = index > currentDayIndex;
+    
+    // Calculate bar height as a percentage of the maximum
+    const barHeight = (item.count / MAX_BASELINE) * 100;
+    
+    // Create pan responder for simple swipe up interaction
+    const panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => isAccessible,
+      onMoveShouldSetPanResponder: () => isAccessible,
+      
+      onPanResponderGrant: (evt, gestureState) => {
+        if (!isAccessible) return;
+        setActiveBarIndex(index);
+        setStartY(gestureState.y0);
+      },
+      
+      onPanResponderMove: (evt, gestureState) => {
+        if (!isAccessible) return;
+        
+        // Calculate new value based on vertical swipe (like filling a cup)
+        const deltaY = startY - gestureState.moveY;
+        const sensitivity = 5; // Adjust sensitivity for filling effect
+        
+        // Calculate new count value (0-20 range)
+        let newValue = Math.max(0, Math.min(
+          Math.floor(deltaY / sensitivity),
+          MAX_BASELINE
+        ));
+        
+        const prevValue = sessionsData[index].count;
+        const dayKey = `day-${index}`;
+        
+        // Update the count for this specific bar
+        setSessionsData(prevData => 
+          prevData.map((dataItem, dataIndex) => 
+            dataIndex === index ? { ...dataItem, count: newValue } : dataItem
+          )
+        );
+        
+        // If this is the first time filling this day's session AND it's not fully filled to baseline,
+        // increment cutback days
+        if (prevValue === 0 && newValue > 0 && newValue < MAX_BASELINE && !filledDays.includes(dayKey)) {
+          setCutbackDays(prev => prev + 1);
+          setFilledDays(prev => [...prev, dayKey]);
+        }
+      },
+      
+      onPanResponderRelease: () => {
+        setActiveBarIndex(null);
+      },
+      
+      onPanResponderTerminate: () => {
+        setActiveBarIndex(null);
+      },
+    });
     
     return (
-      <View key={index} style={styles.barContainer}>
+      <View key={index} style={styles.barContainer} {...(isAccessible ? panResponder.panHandlers : {})}>
         <View style={styles.barWrapper}>
+          {/* Display the count value on top of the bar */}
+          {item.count > 0 && (
+            <Text style={styles.valueText}>{item.count}</Text>
+          )}
+          
+          {/* Background bar (always visible) */}
           <View 
             style={[
-              styles.bar, 
-              { height: `${barHeight}%` },
-              isCurrentDay && styles.currentDayBar
+              styles.backgroundBar, 
+              { opacity: isFutureDay ? 0.5 : 1 }
             ]} 
           />
-          {isCurrentDay && (
-            <View style={styles.currentDayIndicator}>
-              <Text style={styles.currentDayText}>C</Text>
-            </View>
-          )}
+          
+          {/* Filled portion of the bar */}
+          <View 
+            style={[
+              styles.filledBar, 
+              { 
+                height: `${Math.max(barHeight, 0)}%`,
+                backgroundColor: '#8AF0DC',
+                opacity: isFutureDay ? 0.3 : 1
+              }
+            ]} 
+          />
         </View>
-        <Text style={styles.dayLabel}>{item.day}</Text>
+        
+        <Text 
+          style={[
+            styles.dayLabel, 
+            { 
+              color: isCurrentDay ? '#8AF0DC' : '#FFFFFF',
+              opacity: isFutureDay ? 0.4 : 1
+            }
+          ]}
+        >
+          {item.day}
+        </Text>
       </View>
     );
   };
+
+  // Initialize session data if it doesn't exist
+  useEffect(() => {
+    if (!sessionsData || sessionsData.length === 0) {
+      const initialData = [
+        { day: 'M', count: 15 },
+        { day: 'T', count: 12 },
+        { day: 'W', count: 10 },
+        { day: 'T', count: 13 },
+        { day: 'F', count: 10 },
+        { day: 'S', count: 7 },
+        { day: 'S', count: 5 }
+      ];
+      setSessionsData(initialData);
+    }
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -53,7 +161,7 @@ export default function SessionsScreen() {
         
         <View style={styles.chartContainer}>
           <View style={styles.barsContainer}>
-            {sessionsData.map((item, index) => renderBar(item, index))}
+            {sessionsData && sessionsData.map((item, index) => renderBar(item, index))}
           </View>
         </View>
         
@@ -91,14 +199,14 @@ const styles = StyleSheet.create({
   chartContainer: {
     flex: 1,
     justifyContent: 'flex-end',
-    maxHeight: 250,
+    height: 250,
     marginBottom: 30,
   },
   barsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    height: '100%',
+    height: 200,
     paddingBottom: 20,
   },
   barContainer: {
@@ -107,35 +215,37 @@ const styles = StyleSheet.create({
   },
   barWrapper: {
     width: 30,
-    height: '100%',
+    height: 200,
     justifyContent: 'flex-end',
     position: 'relative',
   },
-  bar: {
+  backgroundBar: {
+    position: 'absolute',
+    bottom: 0,
     width: '100%',
-    backgroundColor: '#8AF0DC', // Light teal color for bars
+    height: '100%',
+    backgroundColor: '#1C454F',
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
   },
-  currentDayBar: {
-    backgroundColor: '#8AF0DC', // Same color as others since the circle will be purple
-  },
-  currentDayIndicator: {
+  filledBar: {
     position: 'absolute',
-    top: -15, 
-    right: -10,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#C270E0', // Purple color for the circle
-    justifyContent: 'center',
-    alignItems: 'center',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: '#8AF0DC',
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
     zIndex: 1,
   },
-  currentDayText: {
+  valueText: {
+    position: 'absolute',
+    top: -25,
+    width: '100%',
+    textAlign: 'center',
     color: '#FFFFFF',
     fontFamily: 'Poppins-Medium',
-    fontSize: 12,
+    fontSize: 14,
+    zIndex: 2,
   },
   dayLabel: {
     color: '#FFFFFF',
