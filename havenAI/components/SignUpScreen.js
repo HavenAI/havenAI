@@ -8,18 +8,25 @@ import {
   Platform,
   TouchableOpacity,
   ImageBackground,
-  Image
+  Image,
+  Alert
 } from 'react-native';
 import COLORS from '../constants/colors.js';
 import background from '../assets/background.png';
-import googleIcon from '../assets/Google.png';
+//import googleIcon from '../assets/Google.png';
 import eyeIcon from '../assets/eye.png';
 import { useNavigation } from '@react-navigation/native';
 import { validateConfirmPassword, validateEmail, validatePassword } from '../utils/validation.js';
 import * as Animatable from 'react-native-animatable';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import {auth} from '../utils/firebase.js';
+//import { useGoogleAuth } from '../utils/googleAuth';
+import Toast from 'react-native-toast-message';
+
 
 export default function SignUpScreen() {
   const navigation = useNavigation();
+  // const [promptAsync] = useGoogleAuth(navigation);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,28 +42,55 @@ export default function SignUpScreen() {
   const passwordRef = useRef(null);
   const confirmRef = useRef(null);
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     const emailErr = validateEmail(email);
     const passwordErr = validatePassword(password);
     const confirmErr = validateConfirmPassword(password, confirmPassword);
-
+  
     setEmailError(emailErr);
     setPasswordError(passwordErr);
     setConfirmError(confirmErr);
-
+  
     if (emailErr) emailRef.current?.shake(800);
     if (passwordErr) passwordRef.current?.shake(800);
     if (confirmErr) confirmRef.current?.shake(800);
-
+  
     if (!emailErr && !passwordErr && !confirmErr) {
-      console.log("Sign Up Successful");
-      navigation.navigate('Nickname');
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const token = await userCredential.user.getIdToken();
+        console.log("line62")
+        
+          Toast.show({
+            type: 'success',
+            text1: 'Signup successful!',
+          });
+  
+          setTimeout(() => {
+            navigation.navigate('LoginScreen');
+          }, 500);
+       
+  
+      } catch (error) {
+        console.error("Sign Up Error:", error);
+  
+        if (error.code === "auth/email-already-in-use") {
+          Alert.alert(
+            "Email Already Registered",
+            "Please try logging in instead.",
+            [{ text: "Go to Login", onPress: () => navigation.navigate("LoginScreen") }]
+          );
+        } else {
+          Alert.alert("Error", error.message || "Something went wrong. Try again.");
+        }
+      }
     }
   };
+  
 
-  const handleGoogleLogin = () => {
-    console.log("Google login pressed");
-  };
+  // const handleGoogleLogin = () => {
+  //   promptAsync();
+  // };
 
   return (
     <ImageBackground source={background} style={styles.background}>
@@ -167,17 +201,17 @@ export default function SignUpScreen() {
           </TouchableOpacity>
 
           {/* Divider */}
-          <View style={styles.orDivider}>
+          {/* <View style={styles.orDivider}>
             <View style={styles.line} />
             <Text style={styles.orText}>or</Text>
             <View style={styles.line} />
-          </View>
+          </View> */}
 
-          {/* Google Login */}
+          {/* Google Login
           <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
             <Image source={googleIcon} style={styles.googleIcon} />
             <Text style={styles.googleText}>Continue with Google</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* Login Link */}

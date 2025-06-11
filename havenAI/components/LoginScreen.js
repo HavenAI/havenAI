@@ -8,18 +8,23 @@ import {
   Platform,
   TouchableOpacity,
   ImageBackground,
-  Image
+  Image,
+  Alert
 } from 'react-native';
 import COLORS from '../constants/colors.js';
 import background from '../assets/background.png';
-import googleIcon from '../assets/Google.png';
+//import googleIcon from '../assets/Google.png';
 import eyeIcon from '../assets/eye.png';
 import { useNavigation } from '@react-navigation/native';
 import { validateEmail, validatePassword } from '../utils/validation.js';
 import * as Animatable from 'react-native-animatable';
+import {auth} from '../utils/firebase.js';
+import{ signInWithEmailAndPassword } from 'firebase/auth';
+//import { useGoogleAuth } from '../utils/googleAuth';
 
 export default function LoginScreen() {
     const navigation = useNavigation();
+    //const [promptAsync] = useGoogleAuth(navigation); 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -28,25 +33,49 @@ export default function LoginScreen() {
     const [passwordError, setPasswordError] = useState('');
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
+
     
     const handleNext = ()=>{
         const emailErr  = validateEmail(email);
         const passwordErr = validatePassword(password);
+        
        
         setEmailError(emailErr);
         setPasswordError(passwordErr);
         
+
         if (emailErr) emailRef.current?.shake(800);
         if (passwordErr) passwordRef.current?.shake(800);
     
         if (!emailErr && !passwordErr) {
-          navigation.navigate('Nickname');
+          signInWithEmailAndPassword(auth, email, password)
+            .then(async (userCredential) => {
+              const token = await userCredential.user.getIdToken();
+              navigation.navigate('Nickname');
+            })
+            .catch((error) => {
+              console.log("Login error:", error);
+            
+              if (error.code === 'auth/user-not-found') {
+                setEmailError("User not found. Please sign up first.");
+                emailRef.current?.shake(800);
+              } else if (error.code === 'auth/wrong-password') {
+                setPasswordError("Incorrect password.");
+                passwordRef.current?.shake(800);
+              } else if (error.code === 'auth/invalid-credential') {
+                setPasswordError("Invalid login. Please check your email and password.");
+                passwordRef.current?.shake(800);
+              } else {
+                Alert.alert("Login Error", error.message || "Something went wrong.");
+              }
+            });
+                    
         }
     };
 
-    const handleGoogleLogin = () =>{
-        console.log("Google login pressed");
-    }
+    // const handleGoogleLogin = () =>{
+    //   promptAsync();
+    // }
   return (
     <ImageBackground source={background} style={styles.background}>
       <KeyboardAvoidingView
@@ -126,18 +155,18 @@ export default function LoginScreen() {
                 <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
 
-            <View style={styles.orDivider}>
+            {/* <View style={styles.orDivider}>
                 <View style={styles.line} />
                 <Text style={styles.orText}>or</Text>
                 <View style={styles.line} />
-            </View>
+            </View> */}
            
 
-            {/* Google Login Button */}
-            <TouchableOpacity style={styles.googleButton} onPress={handleGoogleLogin}>
+            {/* Google Login Button
+            <TouchableOpacity style={styles.googleButton} onPress={signInWithGoogle}>
                 <Image source={googleIcon} style={styles.googleIcon} />
                 <Text style={styles.googleText}>Continue with Google</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
 
         <TouchableOpacity onPress={()=> {
@@ -286,7 +315,7 @@ const styles = StyleSheet.create({
       fontSize: 14,
       color: '#333',
       fontFamily: 'Poppins',
-      marginTop: 20,
+      marginBottom: 20,
     },
     linkText: {
       color: '#5800CB',

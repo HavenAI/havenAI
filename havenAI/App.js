@@ -5,6 +5,7 @@ import {useFonts} from 'expo-font';
 import WelcomeScreen from './components/WelcomeScreen.js';
 import Navigation from './navigation/Navigation.js';
 import { UserProvider } from './context/UserContext.js';
+import Toast from 'react-native-toast-message';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -19,6 +20,7 @@ export default function App() {
   return (
     <UserProvider>
       <Navigation />
+      <Toast></Toast>
     </UserProvider>
   );
 };
