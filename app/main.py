@@ -6,6 +6,8 @@ from app.routes import logs, chat, onboarding
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
 
+from app.scheduler import start_scheduler
+
 app = FastAPI(title="Haven AI Backend",
     version="0.1.0",
     description="API for craving logging, chat, and proactive support",
@@ -54,3 +56,8 @@ def root():
 
 
 app.include_router(onboarding.router, tags=["Onboarding"])
+
+
+@app.on_event("startup")
+def startup_event():
+    start_scheduler()
