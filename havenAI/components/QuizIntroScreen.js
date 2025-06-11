@@ -9,15 +9,21 @@ import { useUser } from '../context/UserContext.js';
 import allQuestions from './data/allQuestions.js';
 import UserBubble from './common/UserBubble.js';
 import OptionButton from './common/OptionButton.js';
+import { getAuth } from 'firebase/auth';
+import { useRoute } from '@react-navigation/native';
 
 export default function QuizIntroScreen() {
     const {nickname} = useUser();
     const keyboardVisible = useKeyboardVisible();
+    const route = useRoute();
+    const { ageRange } = route.params || {};
+
+
     
     const [chatInput, setChatInput] = useState('');
     const [quizStarted, setQuizStarted] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [answers,setAnswers] = useState({});
+    const [answers,setAnswers] = useState({ageRange: ageRange || null});
     const [isBotTyping, setIsBotTyping] = useState(false);
     const scrollViewRef = useRef();
     
@@ -66,7 +72,7 @@ export default function QuizIntroScreen() {
         }
     };
 
-    const proceedToNextQuestion=()=>{
+    const proceedToNextQuestion= async ()=>{
         if(currentIndex < allQuestions.length - 1){
             const nextIndex = currentIndex + 1;
             const nextQuestion = allQuestions[nextIndex];
@@ -74,7 +80,60 @@ export default function QuizIntroScreen() {
             setIsBotTyping(true);
             addTypingAndMessage(nextQuestion.question, () => setCurrentIndex(nextIndex)); 
         }else{
-            console.log('Quiz completed with answers:', answers);
+          console.log("\n Quiz completed with answers:\n", answers);
+                        
+
+            const auth = getAuth();
+            const user = auth.currentUser;
+
+            if (user) {
+              const token = await user.getIdToken();
+
+              const mappedPayload = {
+                email: user.email,
+                goal: answers.cause,
+                ageRange: answers.ageRange, // Set this or collect it in the quiz
+                vapeType: answers.vapeType,
+                nicotineStrength: answers.nicotineStrength,
+                craveTime: answers.cravingTime,
+                craveTriggers: [answers.stressTriggers],
+                vapeFrequency: answers.frequency,
+                quitHistory: answers.quitBefore,
+                cravingFeeling: answers.cravingFeelings,
+                vapingEmotion: answers.vapeFeeling,
+                cravingSupport: answers.supportType,
+                safeSpots: answers.calmingThings,
+                stressTriggers: answers.stressTriggers,
+                musicHelp: answers.relaxingSounds,
+                mindfulness: answers.mindfulnessUse,
+                mindfulnessTypes: answers.mindfulnessDetails,
+                aiTone: answers.tone,
+                aiTalkative: answers.talkLevel,
+                checkInFrequency: answers.checkinFrequency,
+                openNotes: answers.openNotes || ""
+              };
+
+              const res = await fetch("http://192.168.1.216:8000/user/onboarding", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(mappedPayload),
+              });
+
+              const data = await res.json();
+              console.log("\n✅ User Onboarding Response:\n" + JSON.stringify(data, null, 2));
+
+              // Optional: log each missing field (if FastAPI response is structured this way)
+              if (data.detail && Array.isArray(data.detail)) {
+                data.detail.forEach((item, i) => {
+                  console.log(`❗ Missing Field [${i + 1}]:`, item.loc?.[1] || "(unknown field)");
+                });
+              }
+
+            }
+
         }
     }
 
