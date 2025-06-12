@@ -1,10 +1,10 @@
 import React from 'react'
-import { View, Text, StyleSheet} from 'react-native'
+import { View, Text, StyleSheet, Image} from 'react-native'
 import COLORS from '../constants/colors.js'
 import background from '../assets/background.png';
 import { ImageBackground, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import havenAIlogo from '../assets/havenAIlogo.png';
 
 
 function WelcomeScreen() {
@@ -13,7 +13,7 @@ function WelcomeScreen() {
         <ImageBackground source={background} style={styles.background}>
         <View style={styles.container}>
             <View style={styles.card}>
-            <View style={styles.avatarPlaceholder} />
+            <Image source={havenAIlogo} style={styles.avatarPlaceholder} resizeMode="cover"/>
             <Text style={styles.title}>Hello!</Text>
             <View style={styles.subtitleContainer}>
                 <Text style={styles.subtitle}>
