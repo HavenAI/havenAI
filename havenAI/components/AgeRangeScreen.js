@@ -26,7 +26,9 @@ export default function AgeRangeScreen() {
     
     const handleContinue = () => {
         if(selectedAge) {
-            navigation.navigate('QuizIntroScreen');
+            navigation.navigate('QuizIntroScreen',{
+              ageRange: selectedAge,
+            });
         } else{
             alert('Please select an age range');
         }

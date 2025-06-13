@@ -6,6 +6,7 @@ import WelcomeScreen from './components/WelcomeScreen.js';
 import Navigation from './navigation/Navigation.js';
 import { UserProvider } from './context/UserContext.js';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -21,6 +22,7 @@ export default function App() {
     <SafeAreaProvider>
       <UserProvider>
         <Navigation />
+        <Toast/>
       </UserProvider>
     </SafeAreaProvider>
   );
