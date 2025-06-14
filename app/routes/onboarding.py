@@ -13,6 +13,8 @@ def save_onboarding(
     answers: OnboardingAnswers,
     credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)
 ):
+    print("Received onboarding answers:", answers)
+    print("Received credentials:", credentials)
     user_id = verify_token(credentials.credentials)
     if not user_id:
         raise HTTPException(status_code=401, detail="Invalid token")
@@ -40,7 +42,7 @@ def get_onboarding(credentials: HTTPAuthorizationCredentials = Depends(auth_sche
         raise HTTPException(status_code=401, detail="Invalid token")
 
     db = get_db()
-    user = db["users"].find_one({"_id": user_id})
+    user = db["users"].find_one({"_id.user_id": user_id['user_id']})
     if user and "onboarding" in user:
         return user["onboarding"]
     return {"message": "No onboarding data found"}
