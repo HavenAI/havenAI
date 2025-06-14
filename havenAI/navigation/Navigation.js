@@ -2,6 +2,8 @@ import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+
+import HomeScreen from '../screens/home/HomeScreen.js';
 import WelcomeScreen from '../components/WelcomeScreen.js';
 import NicknameScreen from '../components/NicknameScreen.js';
 import AgeRangeScreen from '../components/AgeRangeScreen.js';
@@ -25,6 +27,11 @@ export default function Navigation() {
             <Stack.Screen name="Nickname" component={NicknameScreen} />
             <Stack.Screen name="AgeRange" component={AgeRangeScreen} />
             <Stack.Screen name="QuizIntroScreen" component={QuizIntroScreen} />
+            {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
+            <Stack.Screen name="Home">
+              {(props) => <HomeScreen {...props} key={props.route.params?.fresh ? 'home-fresh' : 'home-default'} />}
+            </Stack.Screen>
+
         </Stack.Navigator>
     </NavigationContainer>
   );

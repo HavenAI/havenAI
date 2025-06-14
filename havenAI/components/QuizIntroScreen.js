@@ -11,12 +11,15 @@ import UserBubble from './common/UserBubble.js';
 import OptionButton from './common/OptionButton.js';
 import { getAuth } from 'firebase/auth';
 import { useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function QuizIntroScreen() {
     const {nickname} = useUser();
     const keyboardVisible = useKeyboardVisible();
     const route = useRoute();
     const { ageRange } = route.params || {};
+    const navigation = useNavigation();
 
 
     
@@ -81,6 +84,14 @@ export default function QuizIntroScreen() {
             addTypingAndMessage(nextQuestion.question, () => setCurrentIndex(nextIndex)); 
         }else{
           console.log("\n Quiz completed with answers:\n", answers);
+
+              // Show simulated loading message
+        setIsBotTyping(true);
+        setMessages(prev => [
+          ...prev,
+          { type: 'bot', text: 'Setting up your personalized space...' }
+        ]);
+
                         
 
             const auth = getAuth();
@@ -113,28 +124,38 @@ export default function QuizIntroScreen() {
                 openNotes: answers.openNotes || ""
               };
 
-              const res = await fetch("http://192.168.1.216:8000/user/onboarding", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(mappedPayload),
-              });
+              try{
+                const res = await fetch("http://192.168.1.216:8000/user/onboarding", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify(mappedPayload),
+                });
+  
+                const data = await res.json();
+                console.log("\nUser Onboarding Response:\n" + JSON.stringify(data, null, 2));
 
-              const data = await res.json();
-              console.log("\n✅ User Onboarding Response:\n" + JSON.stringify(data, null, 2));
+                if (!res.ok) {
+                  console.error("Server responded with an error:", res.status, data);
+                  return;
+                }
+                setIsBotTyping(false);
+                navigation.replace("Home", { fresh: true });
 
               // Optional: log each missing field (if FastAPI response is structured this way)
               if (data.detail && Array.isArray(data.detail)) {
                 data.detail.forEach((item, i) => {
-                  console.log(`❗ Missing Field [${i + 1}]:`, item.loc?.[1] || "(unknown field)");
+                  console.log(` Missing Field [${i + 1}]:`, item.loc?.[1] || "(unknown field)");
                 });
               }
-
+            }catch (error) {
+                console.error(" Network Error during onboarding:", error);
             }
-
         }
+      }
+
     }
 
     const handleOptionSelect = (option)=>{
