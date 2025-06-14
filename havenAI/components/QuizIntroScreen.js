@@ -28,6 +28,8 @@ export default function QuizIntroScreen() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [answers,setAnswers] = useState({ageRange: ageRange || null});
     const [isBotTyping, setIsBotTyping] = useState(false);
+    const [multiSelectPending, setMultiSelectPending] = useState(false);
+
     const scrollViewRef = useRef();
     
     const [messages, setMessages] = useState([
@@ -99,31 +101,35 @@ export default function QuizIntroScreen() {
 
             if (user) {
               const token = await user.getIdToken();
-
+              const flatten = (value) =>
+                Array.isArray(value) ? value.join(", ") : value;
+              
               const mappedPayload = {
                 email: user.email,
-                goal: answers.cause,
-                ageRange: answers.ageRange, // Set this or collect it in the quiz
-                vapeType: answers.vapeType,
-                nicotineStrength: answers.nicotineStrength,
-                craveTime: answers.cravingTime,
-                craveTriggers: [answers.stressTriggers],
-                vapeFrequency: answers.frequency,
-                quitHistory: answers.quitBefore,
-                cravingFeeling: answers.cravingFeelings,
-                vapingEmotion: answers.vapeFeeling,
-                cravingSupport: answers.supportType,
-                safeSpots: answers.calmingThings,
-                stressTriggers: answers.stressTriggers,
-                musicHelp: answers.relaxingSounds,
-                mindfulness: answers.mindfulnessUse,
-                mindfulnessTypes: answers.mindfulnessDetails,
-                aiTone: answers.tone,
-                aiTalkative: answers.talkLevel,
-                checkInFrequency: answers.checkinFrequency,
-                openNotes: answers.openNotes || ""
+                goal: flatten(answers.cause),
+                ageRange: flatten(answers.ageRange),
+                vapeType: flatten(answers.vapeType),
+                nicotineStrength: flatten(answers.nicotineStrength),
+                craveTime: flatten(answers.cravingTime),
+                craveTriggers: [flatten(answers.stressTriggers)],
+                vapeFrequency: flatten(answers.frequency),
+                quitHistory: flatten(answers.quitBefore),
+                cravingFeeling: flatten(answers.cravingFeelings),
+                vapingEmotion: flatten(answers.vapeFeeling),
+                cravingSupport: flatten(answers.supportType),
+                safeSpots: flatten(answers.calmingThings),
+                stressTriggers: flatten(answers.stressTriggers),
+                musicHelp: flatten(answers.relaxingSounds),
+                mindfulness: flatten(answers.mindfulnessUse),
+                mindfulnessTypes: flatten(answers.mindfulnessDetails),
+                aiTone: flatten(answers.tone),
+                aiTalkative: flatten(answers.talkLevel),
+                checkInFrequency: flatten(answers.checkinFrequency),
+                openNotes: flatten(answers.openNotes || ""),
+                quitMethod: flatten(answers.quitMethod),
+                futureSelfMessage: flatten(answers.futureSelfMessage)
               };
-
+              
               try{
                 const res = await fetch("http://192.168.1.216:8000/user/onboarding", {
                   method: "POST",
@@ -160,10 +166,30 @@ export default function QuizIntroScreen() {
 
     const handleOptionSelect = (option)=>{
         const currentQuestion = allQuestions[currentIndex];
-        setAnswers({...answers,[currentQuestion.id]: option});
-        setMessages(prev => [...prev, { type: 'user', text: option }]);
-        proceedToNextQuestion();
-    };
+        const isMulti = currentQuestion.multiSelect;
+        const currentAnswer = answers[currentQuestion.id] || (isMulti? [] : null);
+
+        if(isMulti){
+          let updatedAnswers;
+          if(currentAnswer.includes(option)){
+            updatedAnswers = currentAnswer.filter(o => o !== option)
+          }else{
+            updatedAnswers = [...currentAnswer, option]
+          }
+          setAnswers(prev=>({
+            ...prev,
+            [currentQuestion.id]: updatedAnswers
+          }))
+          setMultiSelectPending(true);
+        } else{
+          setAnswers(prev => ({
+            ...prev,
+            [currentQuestion.id]: option
+          }));
+          setMessages(prev => [...prev, { type: 'user', text: option }]);
+          proceedToNextQuestion();
+        }
+      };
 
 
     const handleMessageSend = () =>{
@@ -217,10 +243,35 @@ export default function QuizIntroScreen() {
                                 <OptionButton label="Begin Quiz" onPress={handleBeginQuiz} fullWidth={false}></OptionButton>
                         )}
                         {quizStarted && !isBotTyping &&
+                          currentIndex > 0 &&
+                          allQuestions[currentIndex]?.options?.map((opt, idx) => {
+                            const isSelected = allQuestions[currentIndex].multiSelect
+                              ? (answers[allQuestions[currentIndex].id] || []).includes(opt)
+                              : answers[allQuestions[currentIndex].id] === opt;
+                            return(
+                              <OptionButton
+                              key={idx}
+                              label={opt}
+                              selected={isSelected}
+                              onPress={() => handleOptionSelect(opt)}  // 👈 this calls your function
+                            />
+                            );
+                        })}
+
+                        {quizStarted && !isBotTyping &&
                             currentIndex > 0 && 
-                            allQuestions[currentIndex]?.options?.map((opt, idx) => (
-                                <OptionButton key={idx} label={opt} onPress={() => handleOptionSelect(opt)} />
-                            ))}
+                            allQuestions[currentIndex]?.multiSelect && multiSelectPending && (
+                              <OptionButton
+                                label="Submit Selection"
+                                variant="submit"
+                                onPress={() => {
+                                  const currentQuestion = allQuestions[currentIndex];
+                                  const selected = answers[currentQuestion.id] || [];
+                                  setMessages(prev => [...prev, { type: 'user', text: selected.join(', ') }]);
+                                  setMultiSelectPending(false);
+                                  proceedToNextQuestion();
+                                }} />
+                            )}
                     </ScrollView>
                     
                     {/* Input Field */}

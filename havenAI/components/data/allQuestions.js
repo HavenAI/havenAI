@@ -11,7 +11,8 @@ const quizSections = [
             "I want to quit completely",
             "I want to cut down gradually",
             "I'm just exploring for now"
-          ]
+          ],
+          multiSelect: true
         },
         {
           id: "vapeType",
@@ -22,7 +23,8 @@ const quizSections = [
             "Pod based (e.g. JUUL, Vuse)",
             "Refillable/Mod",
             "Not sure"
-          ]
+          ],
+          multiSelect: true
         },
         {
           id: "nicotineStrength",
@@ -33,7 +35,8 @@ const quizSections = [
             "Medium (e.g. 20–35mg)",
             "Low (e.g. <10mg)",
             "I'm not sure"
-          ]
+          ],
+          multiSelect: true
         }
       ]
     },
@@ -52,7 +55,8 @@ const quizSections = [
             "After meals",
             "In social settings",
             "After consuming alcohol"
-          ]
+          ],
+          multiSelect: true
         },
         {
           id: "cause",
@@ -66,7 +70,8 @@ const quizSections = [
             "To focus",
             "Social pressure",
             "I'm not sure"
-          ]
+          ],
+          multiSelect: true
         },
         {
           id: "frequency",
@@ -78,7 +83,8 @@ const quizSections = [
             "6 - 10 times",
             "More than 10 times",
             "I don't keep track"
-          ]
+          ],
+          multiSelect: true
         },
         {
           id: "quitBefore",
@@ -98,7 +104,20 @@ const quizSections = [
             "General discomfort",
             "Dizziness or lack of focus",
             "Jittery or shaking"
-          ]
+          ],
+          multiSelect: true
+        },
+        {
+          id: "quitMethod",
+          type: "radio",
+          question: "What is your preferred way to quit vaping?",
+          options: ["Quit cold turkey", "Quit gradually"]
+        },
+        {
+          id: "futureSelfMessage",
+          type: "text",
+          question:
+            "Imagine it’s 6 months from now and you’ve fully quit vaping. What would your future self say to you right now to keep you going? (Tip: Think about how you want to feel — e.g. free, healthy, proud — and let those feelings guide your words.)"
         }
       ]
     },
@@ -115,7 +134,8 @@ const quizSections = [
             "A voice note with encouragement",
             "Just chat with me",
             "A challenge or distraction"
-          ]
+          ],
+          multiSelect: true
         },
         {
           id: "calmingThings",
@@ -136,7 +156,8 @@ const quizSections = [
           id: "mindfulnessUse",
           type: "radio",
           question: "Do you currently use any mindfulness, journaling, or breathing techniques?",
-          options: ["Yes", "No", "Maybe"]
+          options: ["Yes", "No", "Maybe"],
+          multiSelect: true
         },
         {
           id: "mindfulnessDetails",
@@ -152,7 +173,8 @@ const quizSections = [
             "Tough love & accountability",
             "Light & encouraging",
             "You decide for me"
-          ]
+          ],
+          multiSelect: true
         },
         {
           id: "talkLevel",
@@ -162,7 +184,8 @@ const quizSections = [
             "Just quick check-ins",
             "A bit of back and forth would be nice",
             "I want full conversations"
-          ]
+          ],
+          multiSelect: true
         },
         {
           id: "checkinFrequency",
@@ -174,7 +197,8 @@ const quizSections = [
             "2 times a day",
             "Daily",
             "Weekly"
-          ]
+          ],
+          multiSelect: true
         },
   
         {
