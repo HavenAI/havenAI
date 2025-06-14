@@ -70,11 +70,11 @@ export default function LoginScreen() {
                 }
               } else {
                 Alert.alert("Login Error", "Failed to fetch onboarding status.");
-                navigation.navigate('LoginScreen');
+                // navigation.navigate('LoginScreen');
                 console.log("User not found, redirecting to login.");
               }
             }catch (error) {
-              console.error("Error checking onboarding status:", err);
+              console.error("Error checking onboarding status:", error);
               Alert.alert("Login Error", "Could not connect to backend.");
             }
         })
