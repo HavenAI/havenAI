@@ -7,6 +7,11 @@ import Navigation from './navigation/Navigation.js';
 import { UserProvider } from './context/UserContext.js';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import {Ionicons} from '@expo/vector-icons'
+import * as Font from 'expo-font';
+import { useEffect, useState } from 'react';
+
+
 
 export default function App() {
   const [fontsLoaded] = useFonts({

@@ -1,30 +1,44 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar, Image, Platform } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import profile from '../../assets/profile.png'
+import { useUser } from '../../context/UserContext.js';
 
 // Import tab screens
-import SummaryScreen from './SummaryScreen';
-import ProgressScreen from './ProgressScreen';
-import CalendarScreen from './CalendarScreen';
-import CutbackScreen from './CutbackScreen';
-import SessionsScreen from './SessionsScreen';
+import SummaryScreen from './summary/SummaryScreen.js';
+import ProgressScreen from './progress/ProgressScreen.js';
+import CalendarScreen from './calendar/CalendarScreen.js';
+import CutbackScreen from './summary/CutbackScreen.js';
+import SessionsScreen from './progress/SessionsScreen.js';
 
 const Stack = createNativeStackNavigator();
 
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return 'Good morning';
+  if (hour < 18) return 'Good afternoon';
+  return 'Good evening';
+};
+
+
+
 // Custom Tab Navigator for Summary, Progress, Calendar, Cutback, and Sessions
 function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
+  const greeting = React.useMemo(() => getGreeting(), []);
+  const {nickname} = useUser();
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: topInset, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', height: 112, backgroundColor: '#1C454F' }]}>
         <View style={styles.greetingContainer}>
-          <Text style={styles.greeting}>Good morning</Text>
+        <Text style={styles.greeting}>{greeting}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
-          <Text style={styles.username}>Jamie</Text>
+          <Text style={styles.username}>{nickname}</Text>
           <TouchableOpacity style={styles.profileIcon}>
-            <Ionicons name="person-outline" size={24} color="#fff" />
+            <Image
+            source={profile} style={ {size: 24, color: "#fff"}}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -99,6 +113,25 @@ export default function HomeScreen() {
     { name: 'Journal', icon: 'create-outline', activeIcon: 'create' },
     { name: 'Settings', icon: 'settings-outline', activeIcon: 'settings' }
   ];
+  const iconMap = {
+    Home: {
+      light: require('../../assets/HomeVectorLight.png'),
+      dark: require('../../assets/HomeVectorDark.png'),
+    },
+    Journal: {
+      light: require('../../assets/JournalVectorLight.png'),
+      dark: require('../../assets/JournalVectorDark.png'),
+    },
+    Settings: {
+      light: require('../../assets/SettingsVectorLight.png'),
+      dark: require('../../assets/SettingsVectorDark.png'),
+    },
+    'Self-Care': {
+      light: require('../../assets/Self-CareVectorLight.png'),
+      dark: require('../../assets/Self-CareVectorDark.png'),
+    },
+  };
+  
 
   // Render bottom tab bar
   const renderBottomTabBar = () => {
@@ -114,10 +147,13 @@ export default function HomeScreen() {
               style={styles.bottomTab}
               onPress={() => setActiveBottomTab(tab.name)}
             >
-              <Ionicons
-                name={activeBottomTab === tab.name ? tab.activeIcon : tab.icon}
-                size={26}
-                color={activeBottomTab === tab.name ? '#FFFFFF' : '#B0D4D7'}
+              <Image
+                source={
+                  activeBottomTab === tab.name
+                  ? iconMap[tab.name]?.dark
+                  : iconMap[tab.name]?.light            
+                }
+                style={{ width: 24, height: 24, tintColor: activeBottomTab === tab.name ? '#fff' : '#B0D4D7' }}
               />
               <Text
                 style={[
@@ -134,7 +170,7 @@ export default function HomeScreen() {
             <TouchableOpacity style={styles.avatarButton} onPress={() => setActiveBottomTab('Talk')}> 
               <View style={styles.avatarBackgroundShape} />
               <Image
-                  source={require('../../assets/avatarimg.png')}
+                  source={require('../../assets/havenAIlogo.png')}
                 style={styles.avatarImage}
               />
               <Text style={[
@@ -154,10 +190,14 @@ export default function HomeScreen() {
               style={styles.bottomTab}
               onPress={() => setActiveBottomTab(tab.name)}
             >
-              <Ionicons
-                name={activeBottomTab === tab.name ? tab.activeIcon : tab.icon}
-                size={26}
-                color={activeBottomTab === tab.name ? '#FFFFFF' : '#B0D4D7'}
+              <Image
+                source={
+                  activeBottomTab === tab.name
+                  ? iconMap[tab.name]?.dark
+                  : iconMap[tab.name]?.light            
+                }
+                style={{ width: 24, height: 24, tintColor: activeBottomTab === tab.name ? '#fff' : '#B0D4D7' }}
+                
               />
               <Text
                 style={[
@@ -288,15 +328,6 @@ const styles = StyleSheet.create({
     bottom: 15, // Adjusted to make avatar pop up more like in the reference design
     zIndex: 1,
   },
-  // avatarBackgroundShape: {
-  //   position: 'absolute',
-  //   bottom: -10, // Adjusted position to match reference design
-  //   width: 80, // Width of the purple shape
-  //   height: 40, // Height of the purple shape
-  //   backgroundColor: '#C3B1E1', // Light purple from target
-  //   borderRadius: 20, // Rounded corners for the shape
-  //   zIndex: 0,
-  // },
   avatarImage: {
     width: 50,
     height: 50,
@@ -304,11 +335,5 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: '#264653', // Match bottom bar background for a seamless look
     zIndex: 2, // Ensure avatar is above its background shape
-  },
-  avatarButtonText: {
-    // Specific styling for the text under the avatar if different from other tabs
-    // For now, it will inherit from bottomTabText and activeBottomTabText
-    // If it needs to be always white or a specific font, define here
-    // Example: color: '#FFFFFF', fontFamily: 'Poppins-SemiBold',
   },
 });

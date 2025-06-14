@@ -51,8 +51,33 @@ export default function LoginScreen() {
           signInWithEmailAndPassword(auth, email, password)
             .then(async (userCredential) => {
               const token = await userCredential.user.getIdToken();
-              navigation.navigate('Nickname');
-            })
+              try{
+                const res = await fetch("http://192.168.1.216:8000/user/onboarding", {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+              });
+              if (res.ok) {
+                const data = await res.json();
+                console.log("🎯 Onboarding response (structure):", JSON.stringify(data, null, 2));
+
+                if (data && data.completed === true) {
+                navigation.replace("Home");
+                } else {
+                navigation.navigate("Nickname");
+                }
+              } else {
+                Alert.alert("Login Error", "Failed to fetch onboarding status.");
+                navigation.navigate('LoginScreen');
+                console.log("User not found, redirecting to login.");
+              }
+            }catch (error) {
+              console.error("Error checking onboarding status:", err);
+              Alert.alert("Login Error", "Could not connect to backend.");
+            }
+        })
             .catch((error) => {
               console.log("Login error:", error);
             

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, PanResponder, TouchableWithoutFeedback } from 'react-native';
-import RecommendedSection from '../../components/RecommendedSection';
-import { useUser } from '../../context/UserContext';
+import RecommendedSection from '../../../components/RecommendedSection';
+import { useUser } from '../../../context/UserContext';
 
 export default function SessionsScreen() {
   // Maximum baseline for all bars

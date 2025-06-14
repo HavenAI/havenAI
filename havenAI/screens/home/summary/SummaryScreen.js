@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import RecommendedSection from '../../components/RecommendedSection';
-import { useUser } from '../../context/UserContext';
+import RecommendedSection from '../../../components/RecommendedSection';
+import { useUser } from '../../../context/UserContext';
 
 export default function SummaryScreen() {
   const { selectedDays, setSelectedDays } = useUser();

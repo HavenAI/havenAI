@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import RecommendedSection from '../../components/RecommendedSection';
+import RecommendedSection from '../../../components/RecommendedSection';
 
 export default function ProgressScreen() {
   return (
