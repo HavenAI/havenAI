@@ -34,6 +34,8 @@ class OnboardingAnswers(BaseModel):
     checkInFrequency: Optional[str]
     vapingEmotion: Optional[str]
     openNotes: Optional[str]
+    quitMethod: Optional[str]
+    futureSelfMessage: Optional[str]
 
 class Onboarding(BaseModel):
     completed: bool
