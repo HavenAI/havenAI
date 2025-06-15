@@ -4,6 +4,7 @@ from app.firebase_auth import verify_token
 from app.db import get_db
 from app.models.user_model import OnboardingAnswers  # import your new model
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from app.scheduler import schedule_daily_checkin
 
 router = APIRouter()
 auth_scheme = HTTPBearer()
@@ -33,7 +34,8 @@ def save_onboarding(
         },
         upsert=True
     )
-    return {"message": "Onboarding saved successfully"}
+    schedule_daily_checkin(user_id)
+    return {"message": "Onboarding saved successfully and check-in scheduled"}
 
 @router.get("/user/onboarding")
 def get_onboarding(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):

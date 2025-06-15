@@ -4,6 +4,7 @@ from datetime import datetime
 from app.middleware.auth import firebase_auth_dependency
 from app.db import db
 from app.services.log_service import insert_log
+from app.scheduler import rule_based_trigger
 
 
 router = APIRouter()
@@ -31,6 +32,7 @@ async def log_craving(data: CravingLog, request: Request):
 
     insert_log(log)
 
+    rule_based_trigger(user["uid"]) 
     return {"message": "Craving logged successfully"}
 
 
