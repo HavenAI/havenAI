@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
-from app.routes import logs, chat, onboarding
+from app.routes import logs, chat, onboarding, user
 
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
@@ -48,6 +48,7 @@ app.openapi = custom_openapi
 
 app.include_router(logs.router, prefix="/log", tags=["Logs"])
 app.include_router(chat.router, prefix="/chat", tags=["Chat"])
+app.include_router(user.router, tags=["Users"])
 
 @app.get("/")
 def root():

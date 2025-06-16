@@ -14,6 +14,8 @@ def save_onboarding(
     answers: OnboardingAnswers,
     credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)
 ):
+    print("Received onboarding answers:", answers)
+    print("Received credentials:", credentials)
     user_id = verify_token(credentials.credentials)
     if not user_id:
         raise HTTPException(status_code=401, detail="Invalid token")
