@@ -15,6 +15,7 @@ class UserProfile(BaseModel):
 
 class OnboardingAnswers(BaseModel):
     ageRange: Optional[str]
+    nickname: Optional[str]
     goal: Optional[str]
     vapeType: Optional[str]
     nicotineStrength: Optional[str]
@@ -36,6 +37,8 @@ class OnboardingAnswers(BaseModel):
     openNotes: Optional[str]
     quitMethod: Optional[str]
     futureSelfMessage: Optional[str]
+    vapeRefill: Optional[str]
+    expense: Optional[str]
 
 class Onboarding(BaseModel):
     completed: bool
