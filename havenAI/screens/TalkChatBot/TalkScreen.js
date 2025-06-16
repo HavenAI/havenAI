@@ -11,7 +11,7 @@ export default function TalkScreen() {
   const { nickname } = useUser();
   const scrollViewRef = useRef();
   const [messages, setMessages] = useState([
-    { type: 'bot', text: `Hi ${nickname}, 🫶 How’s your day going so far? I’m here if you want to talk about anything, big or small.` }
+    { type: 'bot', text: `Hi ${nickname}, 🫶 Welcomeback` }
   ]);
   const [input, setInput] = useState('');
   const [isBotTyping, setIsBotTyping] = useState(false);
@@ -50,14 +50,14 @@ export default function TalkScreen() {
 
       if (!res.ok) {
         const errorText = await res.text();
-        console.error("❌ Response failed:", res.status, errorText);
+        console.error("Response failed:", res.status, errorText);
         throw new Error("Backend error");
       }
 
       const data = await res.json();
-      setMessages(prev => [...prev, { type: 'bot', text: data }]);
+      setMessages(prev => [...prev, { type: 'bot', text: data.response }]);
     } catch (error) {
-      console.log("🔥 Error sending message:", error);
+      console.log("Error sending message:", error);
       setMessages(prev => [...prev, { type: 'bot', text: "Sorry, something went wrong." }]);
     } finally {
       setIsBotTyping(false);
@@ -73,9 +73,13 @@ export default function TalkScreen() {
         <LinearGradient colors={['#66B2A3', '#CBCEEB']} style={[styles.background,{flex: 1}]}>
           <View style={styles.container}>
             <ScrollView ref={scrollViewRef} contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-              {messages.map((msg, index) => (
-                <MessageBubble key={index} message={msg.text} from={msg.type} />
-              ))}
+              {messages.map((msg, index) => {
+                console.log(msg)
+                return(
+                  <MessageBubble key={index} message={msg.text} from={msg.type} />
+                )
+                
+              })}
               {isBotTyping && <MessageBubble message="Haven AI is typing..." from="bot" />}
             </ScrollView>
             <View style={styles.inputWrapper}>
@@ -88,7 +92,7 @@ export default function TalkScreen() {
                 returnKeyType="send"
                 onSubmitEditing={handleSend}
               />
-              <TouchableOpacity onPress={handleSend} style={styles.sendButton}>
+              <TouchableOpacity onPress={handleSend} style={styles.sendButton}activeOpacity={0.7}>
                 <Ionicons name="send" size={22} color="white" />
               </TouchableOpacity>
             </View>

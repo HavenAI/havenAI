@@ -7,7 +7,7 @@ export default function MessageBubble({ message, from }) {
   return (
     <View style={[styles.bubbleContainer, isUser ? styles.right : styles.left]}>
       <View style={[styles.bubble, isUser ? styles.userBubble : styles.botBubble]}>
-        <Text style={[styles.text, isUser ? styles.userText : styles.botText]}>{message}</Text>
+        <Text style={[styles.text, isUser ? styles.userText : styles.botText]}> {typeof message === 'string' ? message : JSON.stringify(message)}</Text>
       </View>
     </View>
   );

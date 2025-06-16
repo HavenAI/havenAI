@@ -20,20 +20,24 @@ export default StyleSheet.create({
     padding: 10,
     borderTopWidth: 0.5,
     borderColor: '#ccc',
-    backgroundColor: 'white',
+    justifyContent: 'space-between'
   },
   input: {
     flex: 1,
-    height: 40,
+    height: 50,
     paddingHorizontal: 12,
     borderRadius: 24,
     backgroundColor: '#F0F0F0',
-    fontSize: 15,
+    fontSize: 20,
   },
   sendButton: {
     marginLeft: 8,
     backgroundColor: '#2D5D74',
     borderRadius: 24,
     padding: 10,
+    width: 50,
+    height: 50,
+  alignItems: 'center',
+  justifyContent: 'center',
   },
 });
