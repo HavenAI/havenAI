@@ -106,6 +106,7 @@ export default function QuizIntroScreen() {
               
               const mappedPayload = {
                 email: user.email,
+                nickname: nickname,
                 goal: flatten(answers.cause),
                 ageRange: flatten(answers.ageRange),
                 vapeType: flatten(answers.vapeType),
@@ -127,7 +128,9 @@ export default function QuizIntroScreen() {
                 checkInFrequency: flatten(answers.checkinFrequency),
                 openNotes: flatten(answers.openNotes || ""),
                 quitMethod: flatten(answers.quitMethod),
-                futureSelfMessage: flatten(answers.futureSelfMessage)
+                futureSelfMessage: flatten(answers.futureSelfMessage),
+                vapeRefill: flatten(answers.vapeRefill),
+                expense: flatten(answers.expense)
               };
               
               try{

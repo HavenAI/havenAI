@@ -19,9 +19,11 @@ export const UserProvider = ({ children }) => {
     const [cutbackDays, setCutbackDays] = useState(0);
     const [lastCutbackDate, setLastCutbackDate] = useState('');
     const [filledDays, setFilledDays] = useState([]);
-
+    const [token, setToken] = useState('');
     return(
-        <UserContext.Provider value={{ 
+        <UserContext.Provider value={{
+            token,
+            setToken, 
             nickname, 
             setNickname, 
             ageRange, 

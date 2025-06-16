@@ -74,6 +74,23 @@ const quizSections = [
           multiSelect: true
         },
         {
+          id: "vapeRefill",
+          type: "radio",
+          question:"On average, how often do you buy a new vape or refill?",
+          options:[
+            "Everyday",
+            "Every 2-3 days",
+            "Once a week",
+            "Every 2 weeks",
+            "Once a month"
+          ]
+        },
+        {
+          id: "expense",
+          type: "text",
+          question: "How much do you usually spend each time you buy a vape or refill?"
+        },
+        {
           id: "frequency",
           type: "radio",
           question: "How many times a day do you typically vape?",

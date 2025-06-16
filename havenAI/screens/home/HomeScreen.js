@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, StatusBar, Image, Platform } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import profile from '../../assets/profile.png'
 import { useUser } from '../../context/UserContext.js';
-
+import { useNavigation } from '@react-navigation/native';
 // Import tab screens
 import SummaryScreen from './summary/SummaryScreen.js';
 import ProgressScreen from './progress/ProgressScreen.js';
@@ -14,6 +14,7 @@ import SessionsScreen from './progress/SessionsScreen.js';
 
 const Stack = createNativeStackNavigator();
 
+
 const getGreeting = () => {
   const hour = new Date().getHours();
   if (hour < 12) return 'Good morning';
@@ -21,12 +22,38 @@ const getGreeting = () => {
   return 'Good evening';
 };
 
-
-
 // Custom Tab Navigator for Summary, Progress, Calendar, Cutback, and Sessions
 function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
+  const [userName, setUserName] = useState('');
+  useEffect(()=>{
+    getUserName()
+  },[])
+  const getUserName = async()=> {
+    try{
+      const res = await fetch("http://192.168.1.216:8000/user", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      if (res.ok) {
+          const data = await res.json();
+          setUserName(data)
+        } else {
+          console.log("User not found, redirecting to login.");
+        }
+    } catch(error){
+      console.log(error)
+    }
+  
+  }
+
+  
   const greeting = React.useMemo(() => getGreeting(), []);
-  const {nickname} = useUser();
+  const {nickname, token} = useUser();
+
+
   return (
     <View style={styles.container}>
       <View style={[styles.header, { paddingTop: topInset, flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-start', height: 112, backgroundColor: '#1C454F' }]}>
@@ -34,7 +61,7 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
         <Text style={styles.greeting}>{greeting}</Text>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
-          <Text style={styles.username}>{nickname}</Text>
+          <Text style={styles.username}>{userName}</Text>
           <TouchableOpacity style={styles.profileIcon}>
             <Image
             source={profile} style={ {size: 24, color: "#fff"}}
@@ -97,6 +124,8 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
 }
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
+
   const [activeTab, setActiveTab] = React.useState('Summary');
   const [activeBottomTab, setActiveBottomTab] = React.useState('Home');
   const insets = useSafeAreaInsets();
@@ -137,7 +166,7 @@ export default function HomeScreen() {
   const renderBottomTabBar = () => {
     const firstTwoTabs = bottomTabs.slice(0, 2);
     const lastTwoTabs = bottomTabs.slice(2, 4);
-
+    
     return (
       <View style={[styles.bottomTabBarContainer, { paddingBottom: insets.bottom }]}>
         <View style={styles.bottomTabBar}>
@@ -167,7 +196,10 @@ export default function HomeScreen() {
           ))}
 
           <View style={styles.avatarOuterContainer}>
-            <TouchableOpacity style={styles.avatarButton} onPress={() => setActiveBottomTab('Talk')}> 
+            <TouchableOpacity style={styles.avatarButton} onPress={() => {
+              console.log("🟢 Talk avatar pressed");
+              navigation.navigate('Talk');
+              setActiveBottomTab('Talk')}}> 
               <View style={styles.avatarBackgroundShape} />
               <Image
                   source={require('../../assets/havenAIlogo.png')}

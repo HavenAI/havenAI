@@ -21,9 +21,10 @@ import * as Animatable from 'react-native-animatable';
 import {auth} from '../utils/firebase.js';
 import{ signInWithEmailAndPassword } from 'firebase/auth';
 //import { useGoogleAuth } from '../utils/googleAuth';
-
+import {useUser} from '../context/UserContext.js'
 export default function LoginScreen() {
     const navigation = useNavigation();
+    const {setToken} = useUser();
     //const [promptAsync] = useGoogleAuth(navigation); 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -51,6 +52,7 @@ export default function LoginScreen() {
           signInWithEmailAndPassword(auth, email, password)
             .then(async (userCredential) => {
               const token = await userCredential.user.getIdToken();
+
               try{
                 const res = await fetch("http://192.168.1.216:8000/user/onboarding", {
                   method: "GET",
@@ -73,6 +75,7 @@ export default function LoginScreen() {
                 // navigation.navigate('LoginScreen');
                 console.log("User not found, redirecting to login.");
               }
+              setToken(token);
             }catch (error) {
               console.error("Error checking onboarding status:", error);
               Alert.alert("Login Error", "Could not connect to backend.");

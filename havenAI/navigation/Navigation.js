@@ -10,6 +10,7 @@ import AgeRangeScreen from '../components/AgeRangeScreen.js';
 import QuizIntroScreen from '../components/QuizIntroScreen.js';
 import LoginScreen from '../components/LoginScreen.js';
 import SignUpScreen from '../components/SignUpScreen.js';
+import TalkScreen from '../screens/TalkChatBot/TalkScreen.js'
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
@@ -31,6 +32,7 @@ export default function Navigation() {
             <Stack.Screen name="Home">
               {(props) => <HomeScreen {...props} key={props.route.params?.fresh ? 'home-fresh' : 'home-default'} />}
             </Stack.Screen>
+            <Stack.Screen name="Talk" component={TalkScreen} />
 
         </Stack.Navigator>
     </NavigationContainer>
