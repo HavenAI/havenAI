@@ -106,6 +106,7 @@ export default function QuizIntroScreen() {
               
               const mappedPayload = {
                 email: user.email,
+                nickname: nickname,
                 goal: flatten(answers.cause),
                 ageRange: flatten(answers.ageRange),
                 vapeType: flatten(answers.vapeType),
