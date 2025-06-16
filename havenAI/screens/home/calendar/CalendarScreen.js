@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
   }, 
   titleText: {
     color: '#fff',
-    fontFamily: 'Poppins-SemiBold',
-    fontSize: 18,
+    fontFamily: 'Poppins',
+    fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
   },
@@ -169,8 +169,8 @@ const styles = StyleSheet.create({
   // },
   monthYearText: {
     color: '#fff',
-    fontFamily: 'Poppins-SemiBold',
-    fontSize: 18,
+    fontFamily: 'Poppins',
+    fontSize: 16,
     textAlign: 'center',
     marginBottom: 15,
   },

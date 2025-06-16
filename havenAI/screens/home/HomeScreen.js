@@ -11,6 +11,7 @@ import ProgressScreen from './progress/ProgressScreen.js';
 import CalendarScreen from './calendar/CalendarScreen.js';
 import CutbackScreen from './summary/CutbackScreen.js';
 import SessionsScreen from './progress/SessionsScreen.js';
+import ProgressCarouselScreen from './summary/ProgressCarouselScreen.js';
 
 const Stack = createNativeStackNavigator();
 
@@ -94,26 +95,11 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
           <Text style={[styles.tabText, activeTab === 'Calendar' && styles.activeTabText]}>Calendar</Text>
           {activeTab === 'Calendar' && <View style={styles.tabIndicator} />}
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.tab, activeTab === 'Cutback' && styles.activeTab]} 
-          onPress={() => setActiveTab('Cutback')}
-        >
-          <Text style={[styles.tabText, activeTab === 'Cutback' && styles.activeTabText]}>Cutback</Text>
-          {activeTab === 'Cutback' && <View style={styles.tabIndicator} />}
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.tab, activeTab === 'Sessions' && styles.activeTab]} 
-          onPress={() => setActiveTab('Sessions')}
-        >
-          <Text style={[styles.tabText, activeTab === 'Sessions' && styles.activeTabText]}>Sessions</Text>
-          {activeTab === 'Sessions' && <View style={styles.tabIndicator} />}
-        </TouchableOpacity>
+       
       </View>
       
       <View style={styles.tabContent}>
-        {activeTab === 'Summary' && <SummaryScreen />}
+        {activeTab === 'Summary' && <ProgressCarouselScreen/>}
         {activeTab === 'Progress' && <ProgressScreen />}
         {activeTab === 'Calendar' && <CalendarScreen />}
         {activeTab === 'Cutback' && <CutbackScreen />}
@@ -302,8 +288,8 @@ const styles = StyleSheet.create({
   activeTab: {},
   tabText: {
     color: 'rgba(255, 255, 255, 0.7)',
-    fontFamily: 'Poppins',
-    fontSize: 12,
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 18,
   },
   activeTabText: {
     color: '#fff',

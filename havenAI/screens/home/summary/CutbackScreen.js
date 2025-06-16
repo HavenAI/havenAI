@@ -16,17 +16,8 @@ export default function CutbackScreen() {
           <Text style={styles.counterNumber}>{cutbackDays}</Text>
           <Text style={styles.counterLabel}>days ago</Text>
         </View>
-        
-        <View style={styles.dotIndicator}>
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-          <View style={[styles.dot, styles.activeDot]} />
-          <View style={styles.dot} />
-        </View>
       </View>
-      
-      <RecommendedSection />
+
     </View>
   );
 }
@@ -57,8 +48,9 @@ const styles = StyleSheet.create({
   },
   counterNumber: {
     color: '#8AF0DC',
-    fontFamily: 'Poppins-Bold',
-    fontSize: 80,
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 120,
+    lineHeight: 130,
   },
   counterLabel: {
     color: '#fff',

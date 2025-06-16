@@ -38,14 +38,6 @@ export default function SummaryScreen() {
         <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
           <Text style={styles.resetButtonText}>Reset</Text>
         </TouchableOpacity>
-        
-        <View style={styles.dotIndicator}>
-          <View style={[styles.dot, styles.activeDot]} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-        </View>
       </View>
       
       <RecommendedSection />
