@@ -13,7 +13,6 @@ auth_scheme =  HTTPBearer()
 
 class ChatInput(BaseModel):
     message: str
-
 @router.post("/send")
 async def send_chat(data: ChatInput, credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     user_id = verify_token(credentials.credentials)

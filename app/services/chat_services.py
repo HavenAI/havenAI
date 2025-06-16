@@ -12,7 +12,7 @@ llm = ChatOpenAI(model="gpt-4-turbo", openai_api_key=settings.OPENAI_API_KEY)
 chat_history = []
 
 async def chat_response(user_message: str, credentials: HTTPAuthorizationCredentials):
-    user_profile = get_quiz_data()
+    user_profile = get_quiz_data(credentials)
     talk_level = user_profile['talk_level']
     emotion = detect_emotion(user_message)
     prefix = emotion_prompt_prefix(emotion)
