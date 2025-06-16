@@ -5,12 +5,9 @@ import os
 
 
 # Load Firebase Admin SDK credentials
-<<<<<<< HEAD
 
 cred = credentials.Certificate(r"secrets/firebase-adminsdk.json")  # Path to the .json file
-=======
-cred = credentials.Certificate("./secrets/firebase-adminsdk.json")  # Path to the .json file
->>>>>>> 4d3a7ed (added new GET endpoint to get user Nickname)
+
 firebase_admin.initialize_app(cred)
 
 
