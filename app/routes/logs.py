@@ -1,11 +1,18 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends,  HTTPException
 from pydantic import BaseModel
 from datetime import datetime
 from app.middleware.auth import firebase_auth_dependency
 from app.db import db
 from app.services.log_service import insert_log
 from app.scheduler import rule_based_trigger
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from app.firebase_auth import verify_token
+from bson import ObjectId
 
+
+
+
+auth_scheme = HTTPBearer()
 
 router = APIRouter()
 
@@ -25,7 +32,7 @@ async def log_craving(data: CravingLog, request: Request):
         "timestamp": data.timestamp,
         "mood": data.mood,
         "location": data.location,
-        "intensity": data.intensity,
+        "intensity": 0,
         "nrt_type": None,
         "dosage_mg": None
     }
@@ -103,3 +110,22 @@ async def get_progress(request: Request):
         "cravings_resisted": resisted,
         "money_saved_usd": round(money_saved, 2)
     }
+
+@router.get("/craving")
+async def get_log_craving(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    user_id = verify_token(credentials.credentials)
+
+    if not user_id:
+        raise HTTPException(
+            status_code=404, detail="Onboarding data not found"
+        )
+
+    logs_cursor = db["logs"].find({"user_id": user_id["user_id"], "type": "craving"})
+    logs = list(logs_cursor)
+
+    for log in logs:
+        log["_id"] = str(log["_id"])
+        if isinstance(log.get("timestamp"), datetime):
+            log["timestamp"] = log["timestamp"].isoformat()
+
+    return {"logs": logs}
