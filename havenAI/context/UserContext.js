@@ -6,6 +6,7 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
     const [nickname, setNickname] = useState('');
     const [ageRange, setAgeRange] = useState('');
+    const [quitMethod, setQuitMethod] = useState('Quit gradually');
     const [selectedDays, setSelectedDays] = useState([]);
     const [sessionsData, setSessionsData] = useState([
         { day: 'M', count: 0 },
@@ -25,7 +26,9 @@ export const UserProvider = ({ children }) => {
             token,
             setToken, 
             nickname, 
-            setNickname, 
+            setNickname,
+            quitMethod,
+            setQuitMethod, 
             ageRange, 
             setAgeRange,
             selectedDays,

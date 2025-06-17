@@ -11,6 +11,7 @@ import QuizIntroScreen from '../components/QuizIntroScreen.js';
 import LoginScreen from '../components/LoginScreen.js';
 import SignUpScreen from '../components/SignUpScreen.js';
 import TalkScreen from '../screens/TalkChatBot/TalkScreen.js'
+import CravingJournalScreen from '../screens/journal/CravingJournalScreen.js';
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
@@ -33,6 +34,8 @@ export default function Navigation() {
               {(props) => <HomeScreen {...props} key={props.route.params?.fresh ? 'home-fresh' : 'home-default'} />}
             </Stack.Screen>
             <Stack.Screen name="Talk" component={TalkScreen} />
+            <Stack.Screen name="CravingJournal" component={CravingJournalScreen} />
+
 
         </Stack.Navigator>
     </NavigationContainer>

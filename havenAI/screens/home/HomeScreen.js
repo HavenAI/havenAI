@@ -12,6 +12,8 @@ import CalendarScreen from './calendar/CalendarScreen.js';
 import CutbackScreen from './summary/CutbackScreen.js';
 import SessionsScreen from './progress/SessionsScreen.js';
 import ProgressCarouselScreen from './summary/ProgressCarouselScreen.js';
+import BottomTabBar from '../../components/common/BottomTabBar.js';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -26,8 +28,10 @@ const getGreeting = () => {
 // Custom Tab Navigator for Summary, Progress, Calendar, Cutback, and Sessions
 function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
   const [userName, setUserName] = useState('');
+  const [userQuitMethod, setUserQuitMethod] = useState('');
   useEffect(()=>{
     getUserName()
+    getQuitMethod()
   },[])
   const getUserName = async()=> {
     try{
@@ -47,12 +51,32 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
     } catch(error){
       console.log(error)
     }
+  }
+  const getQuitMethod = async()=> {
+    try{
+      const res = await fetch("http://192.168.1.216:8000/user/quitmethod", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      if (res.ok) {
+          const data = await res.json();
+          setQuitMethod(data)
+        } else {
+          console.log("User quit Method not found, redirecting to login.");
+        }
+    } catch(error){
+      console.log(error)
+    }
   
   }
 
   
   const greeting = React.useMemo(() => getGreeting(), []);
-  const {nickname, token} = useUser();
+  const {token, setQuitMethod} = useUser();
+  
 
 
   return (
@@ -147,96 +171,17 @@ export default function HomeScreen() {
     },
   };
   
-
-  // Render bottom tab bar
-  const renderBottomTabBar = () => {
-    const firstTwoTabs = bottomTabs.slice(0, 2);
-    const lastTwoTabs = bottomTabs.slice(2, 4);
-    
-    return (
-      <View style={[styles.bottomTabBarContainer, { paddingBottom: insets.bottom }]}>
-        <View style={styles.bottomTabBar}>
-          {firstTwoTabs.map((tab) => (
-            <TouchableOpacity
-              key={tab.name}
-              style={styles.bottomTab}
-              onPress={() => setActiveBottomTab(tab.name)}
-            >
-              <Image
-                source={
-                  activeBottomTab === tab.name
-                  ? iconMap[tab.name]?.dark
-                  : iconMap[tab.name]?.light            
-                }
-                style={{ width: 24, height: 24, tintColor: activeBottomTab === tab.name ? '#fff' : '#B0D4D7' }}
-              />
-              <Text
-                style={[
-                  styles.bottomTabText,
-                  activeBottomTab === tab.name && styles.activeBottomTabText,
-                ]}
-              >
-                {tab.name}
-              </Text>
-            </TouchableOpacity>
-          ))}
-
-          <View style={styles.avatarOuterContainer}>
-            <TouchableOpacity style={styles.avatarButton} onPress={() => {
-              console.log("🟢 Talk avatar pressed");
-              navigation.navigate('Talk');
-              setActiveBottomTab('Talk')}}> 
-              <View style={styles.avatarBackgroundShape} />
-              <Image
-                  source={require('../../assets/havenAIlogo.png')}
-                style={styles.avatarImage}
-              />
-              <Text style={[
-                  styles.bottomTabText,
-                  styles.avatarButtonText, // Central avatar text might need specific styling
-                  activeBottomTab === 'Talk' && styles.activeBottomTabText
-                ]}
-              >
-                Talk
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {lastTwoTabs.map((tab) => (
-            <TouchableOpacity
-              key={tab.name}
-              style={styles.bottomTab}
-              onPress={() => setActiveBottomTab(tab.name)}
-            >
-              <Image
-                source={
-                  activeBottomTab === tab.name
-                  ? iconMap[tab.name]?.dark
-                  : iconMap[tab.name]?.light            
-                }
-                style={{ width: 24, height: 24, tintColor: activeBottomTab === tab.name ? '#fff' : '#B0D4D7' }}
-                
-              />
-              <Text
-                style={[
-                  styles.bottomTabText,
-                  activeBottomTab === tab.name && styles.activeBottomTabText,
-                ]}
-              >
-                {tab.name}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-    );
-  };
-
   return (
     <View style={styles.safeArea}>
       <StatusBar barStyle="light-content" backgroundColor="#2A6D74" />
       <CustomTopTabNavigator activeTab={activeTab} setActiveTab={setActiveTab} topInset={insets.top} />
-      {renderBottomTabBar()}
+      <BottomTabBar
+      activeBottomTab={activeBottomTab}
+      setActiveBottomTab={setActiveBottomTab}
+      navigation={navigation}
+      insets={insets}
+    />
+
     </View>
   );
 }

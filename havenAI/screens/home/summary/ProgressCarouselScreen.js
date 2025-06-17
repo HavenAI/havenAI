@@ -4,12 +4,14 @@ import StreakScreen from './StreakScreen';
 import CutbackScreen from './CutbackScreen';
 import RecommendedSection from '../../../components/RecommendedSection';
 import SessionsScreen from './SessionsScreen';
+import {useUser} from '../../../context/UserContext.js'
 
 const { width } = Dimensions.get('window');
 
 export default function ProgressCarouselScreen() {
   const scrollRef = useRef();
   const [activeIndex, setActiveIndex] = useState(0);
+  const {quitMethod} = useUser();
 
   const handleScrollEnd = (e) => {
     const offsetX = e.nativeEvent.contentOffset.x;
@@ -28,15 +30,17 @@ export default function ProgressCarouselScreen() {
       style={styles.scrollContainer}
       contentContainerStyle={styles.contentContainer}
     >
-      <View style={styles.carouselItem}>
+      
+      {
+        quitMethod === 'Quit gradually' 
+          ? <View style={styles.carouselItem}>
+        <CutbackScreen />
+            </View>: <View style={styles.carouselItem}>
         <StreakScreen />
       </View>
+      }
       <View style={styles.carouselItem}>
         <SessionsScreen />
-      </View>
-      <View style={styles.carouselItem}>
-        <CutbackScreen />
-
       </View>
       
     </ScrollView>
@@ -44,7 +48,6 @@ export default function ProgressCarouselScreen() {
     <View style={styles.dotIndicator}>
         <View style={[styles.dot, activeIndex === 0 && styles.activeDot]} />
         <View style={[styles.dot, activeIndex === 1 && styles.activeDot]} />
-        <View style={[styles.dot, activeIndex === 2 && styles.activeDot]} />
       </View>
     <RecommendedSection />
     </View>
