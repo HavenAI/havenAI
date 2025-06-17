@@ -8,4 +8,3 @@ export function formatDateTime(date) {
     }).replace(' ', '');
     return `${datePart} - ${timePart}`;
   }
-  

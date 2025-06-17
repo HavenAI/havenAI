@@ -1,4 +1,4 @@
-import React, {useState } from 'react';
+import React, {useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, StatusBar, Image, ScrollView, TextInput,} from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,22 +10,40 @@ import LocationIcon from '../../assets/Location-Icon.png'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import COLORS from '../../constants/colors';
 import { formatDateTime } from '../../utils/time.js';
+import { useUser } from '../../context/UserContext.js';
 
 const Stack = createNativeStackNavigator();
 
 
-function CustomTopTabNavigator({topInset }) {
+function LoggingCravingVaping({topInset }) {
   const [showForm, setShowForm] = useState(false);
   const [entryType, setEntryType] = useState('Craving');
   const [time, setTime] = useState('Now');
   const [location, setLocation] = useState('');
-  const [feeling, setFeeling] = useState('Stress');
+  const [feeling, setFeeling] = useState('Stressed');
   const [notes, setNotes] = useState('');
   const [logs, setLogs] = useState([]);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const {token} = useUser()
 
+  const getLoggingData = async () =>{
 
-  const handleSubmit = () => {
+    const response = await fetch('http://192.168.1.216:8000/log/craving', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+    const result = await response.json();
+
+    setLogs(result["logs"])
+  }
+  useEffect(()=>{
+    getLoggingData()
+  },[])
+
+  const handleSubmit = async () => {
     if (!location) {
       alert('Please enter a location');
       return;
@@ -46,8 +64,25 @@ function CustomTopTabNavigator({topInset }) {
     setTime('Now');
     setNotes('');
     setShowForm(false);
-  };
 
+    
+    const response = await fetch('http://192.168.1.216:8000/log/craving', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      timestamp: new Date().toISOString(),
+      mood: newLog.feeling,
+      location: newLog.location,
+      intensity: 0
+    })
+  });
+
+  const result = await response.json();
+  console.log(result);
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -133,7 +168,7 @@ function CustomTopTabNavigator({topInset }) {
             ]}
             labelField="label"
             valueField="value"
-            value={time}
+            value={location}
             onChange={item => setLocation(item.value)}
           />
 
@@ -183,11 +218,11 @@ function CustomTopTabNavigator({topInset }) {
     <View style={styles.separator} />
     <Text style={styles.previousLogsTitle}>Previous Logs</Text>
       {logs.map(log => (
-        <View key={log.id} style={styles.logCard}>
+        <View key={log._id} style={styles.logCard}>
           <View style={styles.logCardHeader}>
-            <Text style={styles.logTime}>{log.time}</Text>
+            <Text style={styles.logTime}>{formatDateTime(new Date(log.timestamp))}</Text>
             <View style={styles.logBadge}>
-              <Text style={styles.logBadgeText}>{log.feeling}</Text>
+              <Text style={styles.logBadgeText}>{log.mood}</Text>
             </View>
           </View>
           <View style={styles.logRow}>
@@ -214,7 +249,7 @@ export default function CravingJournalScreen() {
   return (
     <View style={styles.safeArea}>
       <StatusBar barStyle="light-content" backgroundColor="#2A6D74" />
-      <CustomTopTabNavigator topInset={insets.top} />
+      <LoggingCravingVaping topInset={insets.top} />
 
       <BottomTabBar
       activeBottomTab={activeBottomTab}
