@@ -35,7 +35,7 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
   },[])
   const getUserName = async()=> {
     try{
-      const res = await fetch("http://192.168.1.216:8000/user", {
+      const res = await fetch("http://192.168.1.216:8000/user/answers", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -44,7 +44,7 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
       })
       if (res.ok) {
           const data = await res.json();
-          setUserName(data)
+          setUserName(data["name"])
         } else {
           console.log("User not found, redirecting to login.");
         }
@@ -54,7 +54,7 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
   }
   const getQuitMethod = async()=> {
     try{
-      const res = await fetch("http://192.168.1.216:8000/user/quitmethod", {
+      const res = await fetch("http://192.168.1.216:8000/user/answers", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -63,7 +63,7 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
       })
       if (res.ok) {
           const data = await res.json();
-          setQuitMethod(data)
+          setQuitMethod(data["quit_method"])
         } else {
           console.log("User quit Method not found, redirecting to login.");
         }
