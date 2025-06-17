@@ -42,10 +42,12 @@ Please adjust your response length and emotional detail accordingly:
 Conversation history:
 {{chat_history}}
 Now respond to this message from the user:
- \"\"\"{{user_message}}\"\"\"
+ \"\"\"{user_message}\"\"\"
 Keep in mind that every chat should be as personalized as possible based on the **Current User Info**.
 """
  
     response = llm.invoke(final_prompt)
+    print("Bot: ",response.content)
     chat_history.append(f"AI: {response.content}")
+    print("chat history", chat_history)
     return response.content

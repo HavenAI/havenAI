@@ -29,11 +29,10 @@ def get_quiz_data(credentials: HTTPAuthorizationCredentials) -> Dict:
     if not user or "onboarding" not in user:
         raise HTTPException(status_code=404, detail="Onboarding data not found")
     
-    answers = user["onboarding"].get("answer", {})
-    print(answers)
-
+    answers = user["onboarding"].get("answers", {})
+    name = user["onboarding"]["answers"]["nickname"]
     return{
-        "name": user.get("name", "User"),  # fallback
+        "name": name,  # fallback
         "age_range": answers.get("ageRange", "Unknown"),
         "goal": parse_list(answers.get("goal")),
         "vape_type": parse_list(answers.get("vapeType")),
@@ -44,9 +43,18 @@ def get_quiz_data(credentials: HTTPAuthorizationCredentials) -> Dict:
         "previous_quit_attempt": answers.get("quitHistory", "Unknown"),
         "craving_feelings": parse_list(answers.get("cravingFeeling")),
         "help_preference": parse_list(answers.get("cravingSupport")),
+        "safe_spot": answers.get("safeSpots", "Unknown"),
+        "stress_trigger": answers.get("stressTriggers", "Unknown"),
+        "helpful_music": answers.get("musicHelp", "Unknown"),
+        "use_of_mindful_technique": answers.get("mindfulness", "Unknown"),
+        "familiar_mindful_technique": answers.get("mindfulnessTypes", "Unknown"),
         "support_style": answers.get("aiTone", "Unknown"),
         "talk_level": answers.get("aiTalkative", "Quick Check-ins"),
         "vaping_feeling": answers.get("vapingEmotion", "Unknown"),
         "additional_notes": answers.get("openNotes", "None"),
-        "daily_checkin": answers.get("checkInFrequency", "Not set")
+        "daily_checkin": answers.get("checkInFrequency", "Not set"),
+        "quit_method": answers.get("quitMethod", "Unknown"),
+        "message_to_future_self": answers.get("futureSelfMessage", "Unknown"),
+        "times_vape_refilled": answers.get("vapeRefill", "Unknown"),
+        "vape_expense": answers.get("expense", "Unknown"),
     }
