@@ -25,6 +25,7 @@ function LoggingCravingVaping({topInset }) {
   const [logs, setLogs] = useState([]);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const {token} = useUser()
+  const [selectedDateTime, setSelectedDateTime] = useState(new Date());
 
   const getLoggingData = async () =>{
 
@@ -36,12 +37,14 @@ function LoggingCravingVaping({topInset }) {
       },
     });
     const result = await response.json();
+    console.log(result["logs"])
 
     setLogs(result["logs"])
   }
   useEffect(()=>{
     getLoggingData()
   },[])
+  
 
   const handleSubmit = async () => {
     if (!location) {
@@ -65,23 +68,32 @@ function LoggingCravingVaping({topInset }) {
     setNotes('');
     setShowForm(false);
 
+    try{
+      const response = await fetch('http://192.168.1.216:8000/log/craving', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          timestamp: selectedDateTime.toISOString(),
+          mood: newLog.feeling,
+          location: newLog.location,
+          intensity: 0,
+          type: entryType
+        })
+      });
+      if (response.ok) {
+        console.log("Log saved successfully.");
+        getLoggingData();
+      } else {
+        const errorData = await response.json();
+        console.error("Failed to save log:", errorData);
+      }
+    }catch(error){
+      console.error("Error during log submission:", error);
+    }
     
-    const response = await fetch('http://192.168.1.216:8000/log/craving', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      timestamp: new Date().toISOString(),
-      mood: newLog.feeling,
-      location: newLog.location,
-      intensity: 0
-    })
-  });
-
-  const result = await response.json();
-  console.log(result);
   };
 
   return (
@@ -141,7 +153,16 @@ function LoggingCravingVaping({topInset }) {
                 onChange={(event, selectedDate) => {
                   setShowTimePicker(false);
                   if (selectedDate) {
-                    const formatted = selectedDate.toLocaleTimeString('en-US', {
+                    const now = new Date();
+                    const finalDate = new Date(
+                      now.getFullYear(),
+                      now.getMonth(),
+                      now.getDate(),
+                      selectedDate.getHours(),
+                      selectedDate.getMinutes()
+                    )
+                    setSelectedDateTime(finalDate);
+                    const formatted = finalDate.toLocaleTimeString('en-US', {
                       hour: 'numeric',
                       minute: '2-digit',
                       hour12: true,
@@ -217,8 +238,9 @@ function LoggingCravingVaping({topInset }) {
     {/* Separator Line */}
     <View style={styles.separator} />
     <Text style={styles.previousLogsTitle}>Previous Logs</Text>
-      {logs.map(log => (
-        <View key={log._id} style={styles.logCard}>
+
+      {logs.map((log, index) => (
+        <View key={index} style={styles.logCard}>
           <View style={styles.logCardHeader}>
             <Text style={styles.logTime}>{formatDateTime(new Date(log.timestamp))}</Text>
             <View style={styles.logBadge}>
