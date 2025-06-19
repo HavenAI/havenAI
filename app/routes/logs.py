@@ -8,7 +8,7 @@ from app.scheduler import rule_based_trigger
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from app.firebase_auth import verify_token
 from bson import ObjectId
-
+from firebase_admin import auth
 
 
 
@@ -134,20 +134,35 @@ async def get_log_craving(credentials: HTTPAuthorizationCredentials = Depends(au
 @router.get("/user/streak")
 async def get_nicotine_free_streak(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     user_id = verify_token(credentials.credentials)
+    print(user_id)
     uid = user_id["uid"]
+    print(uid)
 
     latest_vape_log = db.logs.find_one(
-        {"user_id": uid, "type": "vape"},
+        {"user_id": uid, "type": "Vaping"},
         sort=[("timestamp", -1)]
     )
-
+    now = datetime.utcnow()
+ 
     if latest_vape_log:
         last_vape_date = latest_vape_log["timestamp"]
-        now = datetime.utcnow()
         diff = now - last_vape_date
         nicotine_free_days = diff.days
-    else:
-        # If no vape logs exist, assume streak is continuous
-        nicotine_free_days = 0
 
-    return JSONResponse({"nicotine_free_days": nicotine_free_days})
+   
+    try:
+        user_record = auth.get_user(uid)
+        created_timestamp = user_record.user_metadata.creation_timestamp
+
+        if created_timestamp:
+            created_date = datetime.utcfromtimestamp(created_timestamp / 1000)
+            diff = now - created_date
+            nicotine_free_days = diff.days
+        else:
+            nicotine_free_days = 0
+        
+    except Exception as e:
+        print("Error fetching user metadata:", e)
+        nicotine_free_days = 0 
+
+    return {"nicotine_free_days": nicotine_free_days}

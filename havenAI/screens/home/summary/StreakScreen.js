@@ -1,14 +1,36 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 import { useUser } from '../../../context/UserContext';
 
 export default function StreakScreen() {
-  const { selectedDays, setSelectedDays } = useUser();
-  
-  // Calculate the number of nicotine-free days
-  const nicotineFreeDays = selectedDays.length;
-    // Handle reset button press
+  const { token } = useUser();
+  const [nicotineFreeDays, setNicotineFreeDays] = useState(0)
+
+
+
+  const getStreakCount = async () => {
+    const res = await fetch ("http://192.168.1.216:8000/log/user/streak",{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  console.log(res)
+  if(res.ok){
+    const data = await res.json();
+ 
+    setNicotineFreeDays(data["nicotine_free_days"])
+  }else{
+    console.log("failed to fetch streak count")
+  }
+}
+
+useEffect(()=>{
+  getStreakCount()
+},[])
   const handleReset = () => {
     Alert.alert(
       "Reset Nicotine-Free Streak?",

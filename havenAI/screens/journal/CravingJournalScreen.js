@@ -37,8 +37,6 @@ function LoggingCravingVaping({topInset }) {
       },
     });
     const result = await response.json();
-    console.log(result["logs"])
-
     setLogs(result["logs"])
   }
   useEffect(()=>{

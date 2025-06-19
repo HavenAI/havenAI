@@ -63,7 +63,6 @@ export default function LoginScreen() {
               });
               if (res.ok) {
                 const data = await res.json();
-                console.log("🎯 Onboarding response (structure):", JSON.stringify(data, null, 2));
 
                 if (data && data.completed === true) {
                 navigation.replace("Home");
