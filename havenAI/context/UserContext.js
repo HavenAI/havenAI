@@ -21,10 +21,13 @@ export const UserProvider = ({ children }) => {
     const [lastCutbackDate, setLastCutbackDate] = useState('');
     const [filledDays, setFilledDays] = useState([]);
     const [token, setToken] = useState('');
+    const [uid, setUid] = useState('');
     return(
         <UserContext.Provider value={{
             token,
-            setToken, 
+            setToken,
+            uid,
+            setUid, 
             nickname, 
             setNickname,
             quitMethod,

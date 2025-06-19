@@ -1,23 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import RecommendedSection from '../../../components/RecommendedSection';
 import { useUser } from '../../../context/UserContext';
 
 export default function CutbackScreen() {
   // Get dynamic cutback days from context
-  const { cutbackDays } = useUser();
+  const { cutbackDays, uid } = useUser();
+  const [daysSinceCreated, setDaysSinceCreated] = useState(null);
 
+  const fetchUserDetails = async (uid) => {
+    try{
+      const res = await fetch(`http://192.168.1.216:8000/user/${uid}`);
+      const data = await res.json();
+      const createdAt = new Date(data.created_at)
+
+      const now = new Date();
+      const diffInMs = now - createdAt;
+      const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+      
+      setDaysSinceCreated(diffInDays)
+     
+    }catch(error){
+      console.error("Failed to fetch user details", error)
+    }
+}
+   
+
+  useEffect(()=>{
+    fetchUserDetails(uid);
+  },[])
+  
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Text style={styles.infoText}>You started cutting back</Text>
-        
         <View style={styles.counterContainer}>
-          <Text style={styles.counterNumber}>{cutbackDays}</Text>
+          <Text style={styles.counterNumber}>{daysSinceCreated}</Text>
           <Text style={styles.counterLabel}>days ago</Text>
         </View>
       </View>
-
     </View>
   );
 }
