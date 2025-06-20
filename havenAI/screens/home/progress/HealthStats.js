@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions } from "react-native";
 import { ProgressChart } from "react-native-chart-kit";
 
 export default function HealthStatsScreen() {
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your health stats</Text>
