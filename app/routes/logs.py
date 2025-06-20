@@ -8,7 +8,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from app.firebase_auth import verify_token
 from bson import ObjectId
 from firebase_admin import auth
-from datetime import datetime, timezone
+from datetime import datetime, timezone , timedelta
 
 
 
@@ -153,7 +153,45 @@ async def get_nicotine_free_streak(credentials: HTTPAuthorizationCredentials = D
         user_timestamp = user.user_metadata.creation_timestamp
         formatted_timestamp = datetime.fromtimestamp(user_timestamp/1000, tz = timezone.utc)
         diff= now - formatted_timestamp
-        nicotine_free_days = diff.days
+        nicotine_free_days = diff.days + 1
        
 
     return {"nicotine_free_days": nicotine_free_days}
+
+@router.get("/user/nicotine_free_dates")
+async def get_nictoine_free_dates(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    user_id = verify_token(credentials.credentials)
+    uid = user_id["uid"]
+
+    logs = db.logs.find({"user_id": uid, "type": "Vaping"}, sort = [("timestamp", 1)])
+
+    vape_dates = {log["timestamp"].date() for log in logs}
+
+    user = auth.get_user(uid)
+
+    created_date = datetime.fromtimestamp(user.user_metadata.creation_timestamp/1000).date()
+    today = datetime.now(timezone.utc).date()
+
+    all_dates = [created_date+ timedelta(days=i) for i in range((today-created_date).days+1)]
+    nicotine_free_dates = [d.isoformat() for d in all_dates if d not in vape_dates]
+
+    return{
+        "nicotine_free_dates": nicotine_free_dates
+    }
+
+@router.get("/user/cutback_dates")
+async def get_cutback_dates(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    user_id = verify_token(credentials.credentials)
+
+    uid = user_id["uid"]
+    user = auth.get_user(uid)
+
+    created_date = datetime.fromtimestamp(user.user_metadata.creation_timestamp/1000).date()
+    today = datetime.now(timezone.utc).date()
+
+    all_dates = [created_date + timedelta(days=i) for i in range((today-created_date).days+1)]
+    cutback_dates = [d.isoformat() for d in all_dates]
+
+    return{
+        "cutback_dates": cutback_dates
+    }
