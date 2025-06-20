@@ -1,36 +1,65 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, StyleSheet, Dimensions, ScrollView, Text, Image } from "react-native";
 import firstchat from '../../../assets/firstchat.png'
 import fiveconvo from '../../../assets/fiveconvo.png'
 import fifteenconvo from '../../../assets/fifteenconvo.png'
 import thirtyconvo from '../../../assets/thirtyconvo.png'
 import COLORS from '../../../constants/colors.js'
+import { useUser } from '../../../context/UserContext.js';
 
 export default function BatchScreen() {
+  const {token} = useUser();
+  const[interventionsCount, setInterventionsCount] = useState(0);
+
+  const getInterventionCount = async () => {
+    const res = await fetch ("http://192.168.1.216:8000/interventions/count",{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if(res.ok){
+    const data = await res.json();
+    console.log(data)
+    setInterventionsCount(data["count"])
+    
+  }else{
+    console.log("failed to fetch streak count")
+  }
+}
+useEffect(()=>{
+  getInterventionCount()
+},[])
+
+const badges = [
+  { threshold: 1, label: "First Chat", image: firstchat },
+  { threshold: 5, label: "5 Conversations", image: fiveconvo },
+  { threshold: 15, label: "15 Conversations", image: fifteenconvo },
+  { threshold: 30, label: "30 Conversations", image: thirtyconvo }
+];
   return (
     <View style={styles.container}>
         <Text style={styles.title}>Your recent & upcoming badges</Text>
         
         <View style={styles.badgeGrid}>
-            <View style={styles.badgeItem}>
-                <Image source={firstchat} style={styles.badgeImage} resizeMode="contain" />
-                <Text style={styles.badgeText}>First Chat</Text>
+            {badges.map((badge, index) => {
+          const unlocked = interventionsCount >= badge.threshold;
+          return (
+            <View key={index} style={styles.badgeItem}>
+              <Image
+                source={badge.image}
+                style={[
+                  styles.badgeImage,
+                  { opacity: unlocked ? 1 : 0.3 }
+                ]}
+                resizeMode="contain"
+              />
+              <Text style={styles.badgeText}>{badge.label}</Text>
             </View>
-
-            <View style={styles.badgeItem}>
-                <Image source={fiveconvo} style={styles.badgeImage} resizeMode="contain" />
-                <Text style={styles.badgeText}>5 Conversations</Text>
-            </View>
-
-            <View style={styles.badgeItem}>
-                <Image source={fifteenconvo} style={styles.badgeImage} resizeMode="contain" />
-                <Text style={styles.badgeText}>15 Conversations</Text>
-            </View>
-
-            <View style={styles.badgeItem}>
-                <Image source={thirtyconvo} style={styles.badgeImage} resizeMode="contain" />
-                <Text style={styles.badgeText}>30 Conversations</Text>
-            </View>
+          );
+        })}
         </View>
     </View>
   )

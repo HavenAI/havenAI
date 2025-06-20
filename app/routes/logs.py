@@ -134,9 +134,8 @@ async def get_log_craving(credentials: HTTPAuthorizationCredentials = Depends(au
 @router.get("/user/streak")
 async def get_nicotine_free_streak(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     user_id = verify_token(credentials.credentials)
-    print(user_id)
     uid = user_id["uid"]
-    print(uid)
+  
 
     latest_vape_log = db.logs.find_one(
         {"user_id": uid, "type": "Vaping"},
