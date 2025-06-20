@@ -143,10 +143,11 @@ async def get_nicotine_free_streak(credentials: HTTPAuthorizationCredentials = D
         sort=[("timestamp", -1)]
     )
     now = datetime.now(timezone.utc)
-    print(now)
     nicotine_free_days = 0
     if latest_vape_log:
         last_vape_date = latest_vape_log["timestamp"]
+        if last_vape_date.tzinfo is None:
+            last_vape_date = last_vape_date.replace(tzinfo=timezone.utc)
         diff = now - last_vape_date
         nicotine_free_days = diff.days
     else:
