@@ -18,7 +18,7 @@ export default function CutbackScreen() {
       const diffInMs = now - createdAt;
       const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
       
-      setDaysSinceCreated(diffInDays)
+      setDaysSinceCreated(diffInDays + 1)
      
     }catch(error){
       console.error("Failed to fetch user details", error)
