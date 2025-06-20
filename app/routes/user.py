@@ -9,6 +9,7 @@ from firebase_admin import auth, initialize_app
 from app.services.intervention_service import get_interventions_for_user
 
 
+
 router = APIRouter()
 auth_scheme = HTTPBearer()
 

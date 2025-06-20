@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Request, Depends,  HTTPException
 from pydantic import BaseModel
-from datetime import datetime
 from app.middleware.auth import firebase_auth_dependency
 from app.db import db
 from app.services.log_service import insert_log
@@ -9,6 +8,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from app.firebase_auth import verify_token
 from bson import ObjectId
 from firebase_admin import auth
+from datetime import datetime, timezone
 
 
 
@@ -135,33 +135,25 @@ async def get_log_craving(credentials: HTTPAuthorizationCredentials = Depends(au
 async def get_nicotine_free_streak(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     user_id = verify_token(credentials.credentials)
     uid = user_id["uid"]
+    user = auth.get_user(uid)
   
 
     latest_vape_log = db.logs.find_one(
         {"user_id": uid, "type": "Vaping"},
         sort=[("timestamp", -1)]
     )
-    now = datetime.utcnow()
- 
+    now = datetime.now(timezone.utc)
+    print(now)
+    nicotine_free_days = 0
     if latest_vape_log:
         last_vape_date = latest_vape_log["timestamp"]
         diff = now - last_vape_date
         nicotine_free_days = diff.days
-
-   
-    try:
-        user_record = auth.get_user(uid)
-        created_timestamp = user_record.user_metadata.creation_timestamp
-
-        if created_timestamp:
-            created_date = datetime.utcfromtimestamp(created_timestamp / 1000)
-            diff = now - created_date
-            nicotine_free_days = diff.days
-        else:
-            nicotine_free_days = 0
-        
-    except Exception as e:
-        print("Error fetching user metadata:", e)
-        nicotine_free_days = 0 
+    else:
+        user_timestamp = user.user_metadata.creation_timestamp
+        formatted_timestamp = datetime.fromtimestamp(user_timestamp/1000, tz = timezone.utc)
+        diff= now - formatted_timestamp
+        nicotine_free_days = diff.days
+       
 
     return {"nicotine_free_days": nicotine_free_days}
