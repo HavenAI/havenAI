@@ -5,6 +5,7 @@ import CutbackScreen from './CutbackScreen.js';
 import RecommendedSection from '../../../components/RecommendedSection.js';
 import SessionsScreen from './SessionsScreen.js';
 import {useUser} from '../../../context/UserContext.js'
+import JourneyScreen from './JourneyScreen.js';
 
 const { width } = Dimensions.get('window');
 
@@ -42,12 +43,15 @@ export default function SummaryCarouselScreen() {
       <View style={styles.carouselItem}>
         <SessionsScreen />
       </View>
+
+      <View style={styles.carouselItem}><JourneyScreen /></View>
       
     </ScrollView>
     {/* Dot indicators */}
     <View style={styles.dotIndicator}>
         <View style={[styles.dot, activeIndex === 0 && styles.activeDot]} />
         <View style={[styles.dot, activeIndex === 1 && styles.activeDot]} />
+        <View style={[styles.dot, activeIndex === 2 && styles.activeDot]} />
       </View>
     <RecommendedSection />
     </View>
