@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import RecommendedSection from '../../../components/RecommendedSection';
 
 export default function ProgressScreen() {
   return (
@@ -25,17 +24,8 @@ export default function ProgressScreen() {
             <Text style={styles.savingsAmount}>$730.00</Text>
           </View>
         </View>
-        
-        <View style={styles.dotIndicator}>
-          <View style={styles.dot} />
-          <View style={[styles.dot, styles.activeDot]} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-        </View>
       </View>
       
-      <RecommendedSection />
     </View>
   );
 }
@@ -49,14 +39,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 40,
     paddingHorizontal: 20,
   },
   infoText: {
     color: '#fff',
     fontFamily: 'Poppins',
     fontSize: 16,
-    marginBottom: 10,
     textAlign: 'center',
   },
   amountText: {

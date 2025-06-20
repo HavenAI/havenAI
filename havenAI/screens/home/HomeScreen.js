@@ -7,11 +7,11 @@ import { useUser } from '../../context/UserContext.js';
 import { useNavigation } from '@react-navigation/native';
 // Import tab screens
 import SummaryScreen from './summary/SummaryScreen.js';
-import ProgressScreen from './progress/ProgressScreen.js';
+import ProgressCarouselScreen from './progress/ProgressCarouselScreen.js';
 import CalendarScreen from './calendar/CalendarScreen.js';
 import CutbackScreen from './summary/CutbackScreen.js';
 import SessionsScreen from './progress/SessionsScreen.js';
-import ProgressCarouselScreen from './summary/ProgressCarouselScreen.js';
+import SummaryCarouselScreen from './summary/SummaryCarouselScreen.js';
 import BottomTabBar from '../../components/common/BottomTabBar.js';
 
 
@@ -123,8 +123,8 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
       </View>
       
       <View style={styles.tabContent}>
-        {activeTab === 'Summary' && <ProgressCarouselScreen/>}
-        {activeTab === 'Progress' && <ProgressScreen />}
+        {activeTab === 'Summary' && <SummaryCarouselScreen/>}
+        {activeTab === 'Progress' && <ProgressCarouselScreen />}
         {activeTab === 'Calendar' && <CalendarScreen />}
         {activeTab === 'Cutback' && <CutbackScreen />}
         {activeTab === 'Sessions' && <SessionsScreen />}

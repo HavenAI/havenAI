@@ -1,14 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View, Dimensions } from 'react-native';
-import StreakScreen from './StreakScreen';
-import CutbackScreen from './CutbackScreen';
-import RecommendedSection from '../../../components/RecommendedSection';
-import SessionsScreen from './SessionsScreen';
+import StreakScreen from './StreakScreen.js';
+import CutbackScreen from './CutbackScreen.js';
+import RecommendedSection from '../../../components/RecommendedSection.js';
+import SessionsScreen from './SessionsScreen.js';
 import {useUser} from '../../../context/UserContext.js'
 
 const { width } = Dimensions.get('window');
 
-export default function ProgressCarouselScreen() {
+export default function SummaryCarouselScreen() {
   const scrollRef = useRef();
   const [activeIndex, setActiveIndex] = useState(0);
   const {quitMethod} = useUser();
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     },
     carousel: {
         flexGrow: 0,
-        maxHeight: 420, // Adjust this based on how tall the green section should be
+        maxHeight: 420,
       },
   scrollContainer: {
     flex: 1,
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   dotIndicator: {
-    flexDirection: 'row',            // ⬅️ THIS makes dots horizontal
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 10,
