@@ -9,6 +9,7 @@ from app.firebase_auth import verify_token
 from bson import ObjectId
 from firebase_admin import auth
 from datetime import datetime, timezone , timedelta
+import calendar
 
 
 
@@ -196,3 +197,39 @@ async def get_cutback_dates(credentials: HTTPAuthorizationCredentials = Depends(
     return{
         "cutback_dates": cutback_dates
     }
+
+@router.get("/user/vapes_count_per_day")
+async def get_vapes_count_per_day(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    user_id = verify_token(credentials.credentials)
+    uid = user_id["uid"]
+    user = auth.get_user(uid)
+
+    # Get current UTC date and start of week (Monday)
+    now = datetime.now(timezone.utc)
+    start_of_week = now - timedelta(days=now.weekday())  # Monday
+    start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    end_of_week = start_of_week + timedelta(days=7)  # Next Monday
+
+    # Query logs for the current week
+    logs = db.logs.find({
+        "user_id": uid,
+        "type": "Vaping",
+        "timestamp": {
+            "$gte": start_of_week,
+            "$lt": end_of_week
+        }
+    })
+
+    # Initialize count dictionary for Mon–Sun
+    day_names = list(calendar.day_abbr)  # ['Mon', 'Tue', 'Wed', ...]
+    vape_counts = {day: 0 for day in day_names}
+
+    for log in logs:
+        ts = log["timestamp"]
+        if ts.tzinfo is None:
+            ts = ts.replace(tzinfo=timezone.utc)
+        weekday = ts.strftime('%a')  # 'Mon', 'Tue', etc.
+        vape_counts[weekday] += 1
+
+    return vape_counts  

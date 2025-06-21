@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, View, Dimensions } from 'react-native';
 import StreakScreen from './StreakScreen.js';
 import CutbackScreen from './CutbackScreen.js';
 import RecommendedSection from '../../../components/RecommendedSection.js';
-import SessionsScreen from './SessionsScreen.js';
+import SessionsScreen from './SessionsScreen.js'
 import {useUser} from '../../../context/UserContext.js'
 import JourneyScreen from './JourneyScreen.js';
 
@@ -41,7 +41,7 @@ export default function SummaryCarouselScreen() {
       </View>
       }
       <View style={styles.carouselItem}>
-        <SessionsScreen />
+        <SessionsScreen visible={activeIndex === 1} />
       </View>
 
       <View style={styles.carouselItem}><JourneyScreen /></View>

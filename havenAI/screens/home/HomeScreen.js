@@ -10,7 +10,7 @@ import SummaryScreen from './summary/SummaryScreen.js';
 import ProgressCarouselScreen from './progress/ProgressCarouselScreen.js';
 import CalendarScreen from './calendar/CalendarScreen.js';
 import CutbackScreen from './summary/CutbackScreen.js';
-import SessionsScreen from './progress/SessionsScreen.js';
+import SessionsScreen from './summary/SessionsScreen.js';
 import SummaryCarouselScreen from './summary/SummaryCarouselScreen.js';
 import BottomTabBar from '../../components/common/BottomTabBar.js';
 
@@ -127,7 +127,6 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
         {activeTab === 'Progress' && <ProgressCarouselScreen />}
         {activeTab === 'Calendar' && <CalendarScreen />}
         {activeTab === 'Cutback' && <CutbackScreen />}
-        {activeTab === 'Sessions' && <SessionsScreen />}
       </View>
     </View>
   );
