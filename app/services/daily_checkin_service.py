@@ -36,7 +36,7 @@ def make_log_untracked_events(credentials: HTTPAuthorizationCredentials):
             "intensity": intensity if intensity is not None else "Unknown",
             "note": note or "Unknown"
         }
-        add_log_entry(log_data, credentials)
+        add_log_entry(credentials, log_data)
         return "Thanks! I’ve logged that for you. Anything else you want to talk about?"
     return log_untracked_events
 
@@ -69,9 +69,9 @@ Here are some relevant past reflections and context that might help you support 
 Here is User preferred talk level: {talk_level}
 Please adjust your response length and emotional detail accordingly:
 
-- **Quick Check-ins:** Brief (1-2 sentences), warm, and grounding. Avoid extra elaboration.  
-- **Back-and-Forth:** Concise reflections with light follow-ups (3-4 sentences). Warm and engaging.  
-- **Full Conversations:** Expressive, emotionally attuned, empathetic, and detailed. Rich, thoughtful responses.  
+  - *Quick Check-ins:* Short, anchoring tone (1–2 sentences).
+  - *Back-and-Forth:* Medium-length reflection (3–4 sentences).
+  - *Full Conversations:* Rich emotional support (4+ sentences), guided prompts.
 
 Conversation history:
 {'\n'.join(chat_history)}
