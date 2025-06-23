@@ -28,17 +28,10 @@ def get_daily_checkin_data(credentials: HTTPAuthorizationCredentials) -> Dict:
 
     cravings = [log for log in today_logs if log["type"] == "craving"]
     vapes = [log for log in today_logs if log["type"] == "vape"]
-    
+    all_location = [log["location"] for log in today_logs if "location" in log and log["location"]]
     all_moods = [log["mood"] for log in today_logs if "mood" in log and log["mood"]]
-    unique_moods = list(set(all_moods))
-    cravings_intensity = [
-        log["intensity"] for log in cravings
-        if "intensity" in log and isinstance(log["intensity"], int)
-    ]
-
-    avg_craving_intensity = round(
-        sum(cravings_intensity) / len(cravings_intensity), 1
-    ) if cravings_intensity else None
+    moods_list = list(set(all_moods))
+    location_list = list(set(all_location))
 
     if today_logs:
         latest_log = max(log["timestamp"] for log in today_logs)
@@ -50,8 +43,8 @@ def get_daily_checkin_data(credentials: HTTPAuthorizationCredentials) -> Dict:
     return {
         "cravings_today": len(cravings),
         "vapes_today": len(vapes),
-        "list_of_moods": unique_moods,
-        "avg_craving_intensity": avg_craving_intensity,
+        "list_of_moods": moods_list,
+        "list_of_location": location_list,
         "time_since_last_log_mins": round(time_since_last_log, 1) if time_since_last_log else None
     }
 
