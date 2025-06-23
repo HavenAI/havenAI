@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import { View, StyleSheet, Dimensions, ScrollView } from "react-native";
 import ProgressScreen from "./ProgressScreen.js";
-import HealthStatsScreen from "./HealthStats.js";
 import RecommendedSection from "../../../components/RecommendedSection.js";
 import BatchScreen from "./BatchScreen.js";
 
@@ -30,9 +29,7 @@ export default function ProgressCarouselScreen() {
         <View style={styles.carouselItem}>
           <ProgressScreen />
         </View>
-        <View style={styles.carouselItem}>
-          <HealthStatsScreen />
-        </View>
+        
         <View style={styles.carouselItem}>
           <BatchScreen />
         </View>
@@ -41,7 +38,6 @@ export default function ProgressCarouselScreen() {
       <View style={styles.dotIndicator}>
         <View style={[styles.dot, activeIndex === 0 && styles.activeDot]} />
         <View style={[styles.dot, activeIndex === 1 && styles.activeDot]} />
-        <View style={[styles.dot, activeIndex === 2 && styles.activeDot]} />
       </View>
       <RecommendedSection />
     </View>
