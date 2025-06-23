@@ -55,4 +55,22 @@ def get_daily_checkin_data(credentials: HTTPAuthorizationCredentials) -> Dict:
     }
 
 
-
+def add_log_entry(credentials: HTTPAuthorizationCredentials, log_data: Dict):
+    user = verify_token(credentials.credentials)
+    if not user:
+        raise HTTPException(
+            status_code= 404,
+            detail = "Invalid Token"
+        )
+    db = get_db()
+    log_entry = {
+        "user_id": user["user_id"],
+        "type": log_data.get("type"),
+        "timestamp": log_data.get("timestamp", datetime.utcnow()),
+        "mood": log_data.get("mood", "Unknown"),
+        "location": log_data.get("location", "Unknown"),
+        "intensity": log_data.get("intensity", "Unknown"),
+        "note": log_data.get("note", "Unknown"),
+    }
+    db["logs"].insert_one(log_entry)
+    return {"status": "success", "log_id": str(log_entry["_id"])}
