@@ -85,9 +85,6 @@ export default function QuizIntroScreen() {
             setIsBotTyping(true);
             addTypingAndMessage(nextQuestion.question, () => setCurrentIndex(nextIndex)); 
         }else{
-          console.log("\n Quiz completed with answers:\n", answers);
-
-              // Show simulated loading message
         setIsBotTyping(true);
         setMessages(prev => [
           ...prev,
@@ -144,7 +141,7 @@ export default function QuizIntroScreen() {
                 });
   
                 const data = await res.json();
-                console.log("\nUser Onboarding Response:\n" + JSON.stringify(data, null, 2));
+             
 
                 if (!res.ok) {
                   console.error("Server responded with an error:", res.status, data);

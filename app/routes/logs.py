@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Request, Depends,  HTTPException
 from pydantic import BaseModel
-from datetime import datetime
 from app.middleware.auth import firebase_auth_dependency
 from app.db import db
 from app.services.log_service import insert_log
@@ -8,7 +7,9 @@ from app.scheduler import rule_based_trigger
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from app.firebase_auth import verify_token
 from bson import ObjectId
-
+from firebase_admin import auth
+from datetime import datetime, timezone , timedelta
+import calendar
 
 
 
@@ -21,6 +22,7 @@ class CravingLog(BaseModel):
     mood: str
     location: str
     intensity: int
+    type : str
 
 @router.post("/craving", dependencies=[Depends(firebase_auth_dependency)])
 async def log_craving(data: CravingLog, request: Request):
@@ -28,7 +30,7 @@ async def log_craving(data: CravingLog, request: Request):
 
     log = {
         "user_id": user["uid"],
-        "type": "craving",
+        "type": data.type,
         "timestamp": data.timestamp,
         "mood": data.mood,
         "location": data.location,
@@ -120,12 +122,114 @@ async def get_log_craving(credentials: HTTPAuthorizationCredentials = Depends(au
             status_code=404, detail="Onboarding data not found"
         )
 
-    logs_cursor = db["logs"].find({"user_id": user_id["user_id"], "type": "craving"})
+    logs_cursor = db["logs"].find({"user_id": user_id["user_id"]})
     logs = list(logs_cursor)
 
     for log in logs:
         log["_id"] = str(log["_id"])
         if isinstance(log.get("timestamp"), datetime):
-            log["timestamp"] = log["timestamp"].isoformat()
+            log["timestamp"] = log["timestamp"].isoformat(timespec='milliseconds') + "Z"
 
     return {"logs": logs}
+
+@router.get("/user/streak")
+async def get_nicotine_free_streak(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    user_id = verify_token(credentials.credentials)
+    uid = user_id["uid"]
+    user = auth.get_user(uid)
+  
+
+    latest_vape_log = db.logs.find_one(
+        {"user_id": uid, "type": "Vaping"},
+        sort=[("timestamp", -1)]
+    )
+    now = datetime.now(timezone.utc)
+    nicotine_free_days = 0
+    if latest_vape_log:
+        last_vape_date = latest_vape_log["timestamp"]
+        if last_vape_date.tzinfo is None:
+            last_vape_date = last_vape_date.replace(tzinfo=timezone.utc)
+        diff = now - last_vape_date
+        nicotine_free_days = diff.days
+    else:
+        user_timestamp = user.user_metadata.creation_timestamp
+        formatted_timestamp = datetime.fromtimestamp(user_timestamp/1000, tz = timezone.utc)
+        diff= now - formatted_timestamp
+        nicotine_free_days = diff.days + 1
+       
+
+    return {"nicotine_free_days": nicotine_free_days}
+
+@router.get("/user/nicotine_free_dates")
+async def get_nictoine_free_dates(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    user_id = verify_token(credentials.credentials)
+    uid = user_id["uid"]
+
+    logs = db.logs.find({"user_id": uid, "type": "Vaping"}, sort = [("timestamp", 1)])
+
+    vape_dates = {log["timestamp"].date() for log in logs}
+
+    user = auth.get_user(uid)
+
+    created_date = datetime.fromtimestamp(user.user_metadata.creation_timestamp/1000).date()
+    today = datetime.now(timezone.utc).date()
+
+    all_dates = [created_date+ timedelta(days=i) for i in range((today-created_date).days+1)]
+    nicotine_free_dates = [d.isoformat() for d in all_dates if d not in vape_dates]
+
+    return{
+        "nicotine_free_dates": nicotine_free_dates
+    }
+
+@router.get("/user/cutback_dates")
+async def get_cutback_dates(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    user_id = verify_token(credentials.credentials)
+
+    uid = user_id["uid"]
+    user = auth.get_user(uid)
+
+    created_date = datetime.fromtimestamp(user.user_metadata.creation_timestamp/1000).date()
+    today = datetime.now(timezone.utc).date()
+
+    all_dates = [created_date + timedelta(days=i) for i in range((today-created_date).days+1)]
+    cutback_dates = [d.isoformat() for d in all_dates]
+
+    return{
+        "cutback_dates": cutback_dates
+    }
+
+@router.get("/user/vapes_count_per_day")
+async def get_vapes_count_per_day(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    user_id = verify_token(credentials.credentials)
+    uid = user_id["uid"]
+    user = auth.get_user(uid)
+
+    # Get current UTC date and start of week (Monday)
+    now = datetime.now(timezone.utc)
+    start_of_week = now - timedelta(days=now.weekday())  # Monday
+    start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    end_of_week = start_of_week + timedelta(days=7)  # Next Monday
+
+    # Query logs for the current week
+    logs = db.logs.find({
+        "user_id": uid,
+        "type": "Vaping",
+        "timestamp": {
+            "$gte": start_of_week,
+            "$lt": end_of_week
+        }
+    })
+
+    # Initialize count dictionary for Mon–Sun
+    day_names = list(calendar.day_abbr)  # ['Mon', 'Tue', 'Wed', ...]
+    vape_counts = {day: 0 for day in day_names}
+
+    for log in logs:
+        ts = log["timestamp"]
+        if ts.tzinfo is None:
+            ts = ts.replace(tzinfo=timezone.utc)
+        weekday = ts.strftime('%a')  # 'Mon', 'Tue', etc.
+        vape_counts[weekday] += 1
+
+    return vape_counts  

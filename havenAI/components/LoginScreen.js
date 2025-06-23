@@ -24,7 +24,7 @@ import{ signInWithEmailAndPassword } from 'firebase/auth';
 import {useUser} from '../context/UserContext.js'
 export default function LoginScreen() {
     const navigation = useNavigation();
-    const {setToken} = useUser();
+    const {setToken, setUid} = useUser();
     //const [promptAsync] = useGoogleAuth(navigation); 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -63,7 +63,6 @@ export default function LoginScreen() {
               });
               if (res.ok) {
                 const data = await res.json();
-                console.log("🎯 Onboarding response (structure):", JSON.stringify(data, null, 2));
 
                 if (data && data.completed === true) {
                 navigation.replace("Home");
@@ -76,6 +75,7 @@ export default function LoginScreen() {
                 console.log("User not found, redirecting to login.");
               }
               setToken(token);
+              setUid(uid);
             }catch (error) {
               console.error("Error checking onboarding status:", error);
               Alert.alert("Login Error", "Could not connect to backend.");

@@ -1,41 +1,58 @@
-import React from 'react';
+import React ,{useState, useEffect} from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import RecommendedSection from '../../../components/RecommendedSection';
+import { useUser } from '../../../context/UserContext';
 
 export default function ProgressScreen() {
+
+  const {token} = useUser();
+  const [moneySaved, setMoneySaved]= useState(0)
+
+
+  const getMoneySaved = async () =>{
+    const res = await fetch ("http://192.168.1.216:8000/log/user/progress",{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  if(res.ok){
+    const data = await res.json();
+    console.log(data)
+    setMoneySaved(data["money_saved_usd"])
+    
+  }else{
+    console.log("failed to fetch money saved")
+}
+  }
+  useEffect(()=>{
+    getMoneySaved()
+  },[])
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Text style={styles.infoText}>You've saved</Text>
         
-        <Text style={styles.amountText}>$25.00</Text>
+        <Text style={styles.amountText}>${moneySaved}</Text>
         
         <Text style={styles.projectedText}>Projected savings</Text>
         
         <View style={styles.savingsContainer}>
           <View style={styles.savingsRow}>
             <Text style={styles.savingsType}>Monthly savings</Text>
-            <Text style={styles.savingsAmount}>$60.83</Text>
+            <Text style={styles.savingsAmount}>${moneySaved*30}</Text>
           </View>
           
           <View style={styles.divider} />
           
           <View style={styles.savingsRow}>
             <Text style={styles.savingsType}>Yearly savings</Text>
-            <Text style={styles.savingsAmount}>$730.00</Text>
+            <Text style={styles.savingsAmount}>${moneySaved*30*12}</Text>
           </View>
-        </View>
-        
-        <View style={styles.dotIndicator}>
-          <View style={styles.dot} />
-          <View style={[styles.dot, styles.activeDot]} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
-          <View style={styles.dot} />
         </View>
       </View>
       
-      <RecommendedSection />
     </View>
   );
 }
@@ -49,19 +66,17 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 40,
     paddingHorizontal: 20,
   },
   infoText: {
     color: '#fff',
     fontFamily: 'Poppins',
     fontSize: 16,
-    marginBottom: 10,
     textAlign: 'center',
   },
   amountText: {
     color: '#66CDAA',
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Poppins',
     fontSize: 48,
     marginBottom: 30,
   },

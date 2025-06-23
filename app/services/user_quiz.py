@@ -15,7 +15,7 @@ def parse_list(value):
 
 def get_quiz_data(credentials: HTTPAuthorizationCredentials) -> Dict:
     user_id = verify_token(credentials.credentials)
-    print(user_id)
+
 
     if not user_id:
         raise HTTPException(
@@ -24,7 +24,7 @@ def get_quiz_data(credentials: HTTPAuthorizationCredentials) -> Dict:
     
     db = get_db()
     user = db["users"].find_one({"_id.user_id": user_id['user_id']})
-    print(user)
+
 
     if not user or "onboarding" not in user:
         raise HTTPException(status_code=404, detail="Onboarding data not found")
