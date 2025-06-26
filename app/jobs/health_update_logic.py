@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from app.db import get_db
-from services.health_score_calculation import calculate_latest_health_score
+from app.services.health_score_calculation import calculate_latest_health_score
 
 
 def update_health_score_for_all_users():
@@ -28,20 +28,20 @@ def update_health_score_for_all_users():
         }
 
         now = datetime.utcnow()
-        three_days_ago = now - timedelta(days=3)
-        six_days_ago = now - timedelta(days=6)
+        two_days_ago = now - timedelta(days=2)
+        four_days_ago = now - timedelta(days=4)
 
         logs = list(db["logs"].find({
             "user_id":user_id,
-            "timestamp":{"$gte":six_days_ago, "$lte":now}
+            "timestamp":{"$gte":four_days_ago, "$lte":now}
         }))
 
 
-        current_cravings = [log for log in logs if log["type"] == "craving" and log["timestamp"] >= three_days_ago]
-        previous_cravings = [log for log in logs if log["type"] == "craving" and log["timestamp"] < three_days_ago]
+        current_cravings = [log for log in logs if log["type"] == "craving" and log["timestamp"] >= two_days_ago]
+        previous_cravings = [log for log in logs if log["type"] == "craving" and log["timestamp"] < two_days_ago]
 
-        current_sessions = [log for log in logs if log["type"] == "vape" and log["timestamp"] >= three_days_ago]
-        previous_sessions = [log for log in logs if log["type"] == "vape" and log["timestamp"] < three_days_ago]
+        current_sessions = [log for log in logs if log["type"] == "vape" and log["timestamp"] >= two_days_ago]
+        previous_sessions = [log for log in logs if log["type"] == "vape" and log["timestamp"] < two_days_ago]
 
         if not current_sessions and not current_cravings:
             continue

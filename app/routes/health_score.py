@@ -3,7 +3,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from datetime import datetime, timedelta
 from app.firebase_auth import verify_token
 from app.db import get_db
-from services.health_score_calculation import calculate_health_score, calculate_latest_health_score
+from app.services.health_score_calculation import calculate_health_score, calculate_latest_health_score
 
 
 router = APIRouter()
@@ -70,22 +70,22 @@ def update_latest_healthscore(credentials: HTTPAuthorizationCredentials = Depend
     user_id = user["user_id"]
     
     now = datetime.utcnow()
-    three_days_ago = now - timedelta(days=3)
-    six_days_ago = now - timedelta(days=6)
+    two_days_ago = now - timedelta(days=2)
+    four_days_ago = now - timedelta(days=4)
 
     all_logs = list(db["logs"].find({
         "user_id": user_id,
-        "timestamp": {"$gte": six_days_ago, "$lte": now}
+        "timestamp": {"$gte": four_days_ago, "$lte": now}
     }))
 
-    current_cravings = [log for log in all_logs if log["type"] == "craving" and log["timestamp"] >= three_days_ago]
-    previous_cravings = [log for log in all_logs if log["type"] == "craving" and log["timestamp"] < three_days_ago]
+    current_cravings = [log for log in all_logs if log["type"] == "craving" and log["timestamp"] >= two_days_ago]
+    previous_cravings = [log for log in all_logs if log["type"] == "craving" and log["timestamp"] < two_days_ago]
 
-    current_sessions = [log for log in all_logs if log["type"] == "vape" and log["timestamp"] >= three_days_ago]
-    previous_sessions = [log for log in all_logs if log["type"] == "vape" and log["timestamp"] < three_days_ago]
+    current_sessions = [log for log in all_logs if log["type"] == "vape" and log["timestamp"] >= two_days_ago]
+    previous_sessions = [log for log in all_logs if log["type"] == "vape" and log["timestamp"] < two_days_ago]
 
     if not current_sessions and not current_cravings:
-        raise HTTPException(status_code=400, detail="No new logs in the last 3 days to update health scores.")
+        raise HTTPException(status_code=400, detail="No new logs in the last 2 days to update health scores.")
     
         # Validate health score initialized
     doc = db["health_scores"].find_one({"_id": user_id})
@@ -100,7 +100,7 @@ def update_latest_healthscore(credentials: HTTPAuthorizationCredentials = Depend
 
     initial_scores = {
         "mental_health": doc["initial_healthscore"].get("mental_health", 70),
-        "lung_function": doc["initial_healthscore"].get("lung_functionality", 70),
+        "lung_functionality": doc["initial_healthscore"].get("lung_functionality", 70),
         "heart_health": doc["initial_healthscore"].get("heart_health", 70),
     }
 

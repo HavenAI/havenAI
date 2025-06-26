@@ -52,7 +52,8 @@ export default function LoginScreen() {
           signInWithEmailAndPassword(auth, email, password)
             .then(async (userCredential) => {
               const token = await userCredential.user.getIdToken();
-
+              const uid = userCredential.user.uid;
+              console.log(token)
               try{
                 const res = await fetch("http://192.168.1.216:8000/user/onboarding", {
                   method: "GET",
