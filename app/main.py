@@ -7,6 +7,7 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
 
 from app.scheduler import schedule_daily_checkin
+from app.jobs.health_score_scheduler import schedule_health_score_update
 
 
 app = FastAPI(title="Haven AI Backend",
@@ -69,3 +70,4 @@ def root():
 @app.on_event("startup")
 def startup_event():
     schedule_daily_checkin()
+    schedule_health_score_update()
