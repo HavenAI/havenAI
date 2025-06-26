@@ -17,11 +17,15 @@ def save_health_milestone(credentials: HTTPAuthorizationCredentials = Depends(au
         raise HTTPException(status_code=401, detail="Invalid token")
     
     db = get_db()
-    user_id = db["users"].find_one({"_id.user_id": user['user_id']})
-    answers = user["onboarding"].get("answers", {}) if user_id else None
+    user_doc = db["users"].find_one({"_id.user_id": user['user_id']})
+    answers = user_doc.get("onboarding", {}).get("answers", {}) if user_doc else None
 
     if answers is None:
         raise HTTPException(status_code=404, detail="Onboarding answers not found")
+
+    existing_score = db["health_scores"].find_one({"_id": user['user_id']})
+    if existing_score and existing_score.get("initial_healthscore", {}).get("initialized") == True:
+        raise HTTPException(status_code=409, detail="Initial health score already saved")
 
     scores = calculate_health_score(answers)
 
@@ -33,6 +37,7 @@ def save_health_milestone(credentials: HTTPAuthorizationCredentials = Depends(au
                     "mental_health": scores["mental_health"],
                     "lung_functionality": scores["lung_function"],
                     "heart_health": scores["heart_health"],
+                    "initialized": True
                 },
                 "latest_healthscore": {
                     "updated_at": datetime.utcnow(),
@@ -46,7 +51,13 @@ def save_health_milestone(credentials: HTTPAuthorizationCredentials = Depends(au
         },
         upsert=True
     )
-    return {"message": "Initial health score saved successfully"}
+    return {"message": "Initial health score saved successfully",
+            "data": {
+                "mental_health": scores["mental_health"],
+                "lung_functionality": scores["lung_function"],
+                "heart_health": scores["heart_health"],
+                "initialized": True
+        }}
 
 
 @router.put("/update/latest")
@@ -73,22 +84,28 @@ def update_latest_healthscore(credentials: HTTPAuthorizationCredentials = Depend
     current_sessions = [log for log in all_logs if log["type"] == "vape" and log["timestamp"] >= three_days_ago]
     previous_sessions = [log for log in all_logs if log["type"] == "vape" and log["timestamp"] < three_days_ago]
 
+    if not current_sessions and not current_cravings:
+        raise HTTPException(status_code=400, detail="No new logs in the last 3 days to update health scores.")
+    
+        # Validate health score initialized
+    doc = db["health_scores"].find_one({"_id": user_id})
+    if not doc or not doc.get("initial_healthscore", {}).get("initialized", False):
+        raise HTTPException(status_code=400, detail="Initial health score not found or not initialized.")
+
+
     user_doc = db["users"].find_one({"_id.user_id": user['user_id']})
     onboarding_answers = user_doc.get("onboarding", {}).get("answers", {}) if user_doc else None
 
     # Get initial scores if needed
-    doc = db["health_scores"].find_one({"_id": user["user_id"]})
-    initial_scores = None
-    if doc and "initial_healthscore" in doc:
-        initial = doc["initial_healthscore"]
-        initial_scores = {
-            "mental_health": initial.get("mental_health", 70),
-            "lung_function": initial.get("lung_functionality", 70),
-            "heart_health": initial.get("heart_health", 70),
-        }
+
+    initial_scores = {
+        "mental_health": doc["initial_healthscore"].get("mental_health", 70),
+        "lung_function": doc["initial_healthscore"].get("lung_functionality", 70),
+        "heart_health": doc["initial_healthscore"].get("heart_health", 70),
+    }
 
     # Calculate
-    scores = calculate_latest_health_score(
+    updated_scores = calculate_latest_health_score(
         current_cravings=current_cravings,
         current_sessions=current_sessions,
         previous_cravings=previous_cravings,
@@ -103,12 +120,11 @@ def update_latest_healthscore(credentials: HTTPAuthorizationCredentials = Depend
         {
             "$set": {
                 "latest_healthscore": {
-                    "updated_at": scores["updated_at"],
-                    "latest_mental_health": scores["latest_mental_health"],
-                    "latest_lung_functionality": scores["latest_lung_functionality"],
-                    "latest_heart_health": scores["latest_heart_health"],
+                    "latest_mental_health": updated_scores["latest_mental_health"],
+                    "latest_lung_functionality": updated_scores["latest_lung_functionality"],
+                    "latest_heart_health": updated_scores["latest_heart_health"],
                 },
-                "updatedAt": datetime.utcnow()
+                "updatedAt": now
             }
         },
         upsert=False
@@ -116,7 +132,35 @@ def update_latest_healthscore(credentials: HTTPAuthorizationCredentials = Depend
 
     return {
         "message": "Latest health score updated",
-        "data": scores
+        "data": {
+            "latest_mental_health": updated_scores["latest_mental_health"],
+            "latest_lung_functionality": updated_scores["latest_lung_functionality"],
+            "latest_heart_health": updated_scores["latest_heart_health"],
+            "updatedAt": now
+        }
     }
 
 
+@router.get("/get")
+def get_health_score(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    user = verify_token(credentials.credentials)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    db = get_db()
+    user_id = user["user_id"]
+
+    doc = db["health_scores"].find_one({"_id": user_id})
+
+    if not doc:
+        raise HTTPException(status_code=404, detail="Health score not found")
+
+    return {
+        "message": "Health score fetched successfully",
+        "data": {
+            "initial_healthscore": doc.get("initial_healthscore"),
+            "latest_healthscore": doc.get("latest_healthscore"),
+            "createdAt": doc.get("createdAt"),
+            "updatedAt": doc.get("updatedAt")
+        }
+    }

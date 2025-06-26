@@ -8,9 +8,9 @@ class InitialHealth(BaseModel):
     mental_health: int
     lung_functionality: int
     heart_health: int
+    initialized: bool = False
 
 class LatestHealth(BaseModel):
-    updated_at: datetime
     latest_mental_health: int
     latest_lung_functionality: int
     latest_heart_health: int
