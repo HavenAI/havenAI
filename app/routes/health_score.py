@@ -153,7 +153,12 @@ def get_health_score(credentials: HTTPAuthorizationCredentials = Depends(auth_sc
     doc = db["health_scores"].find_one({"_id": user_id})
 
     if not doc:
-        raise HTTPException(status_code=404, detail="Health score not found")
+        return {
+            "message": "Health score not initialized yet",
+            "data": {
+                "initialized": False
+            }
+        }
 
     return {
         "message": "Health score fetched successfully",
