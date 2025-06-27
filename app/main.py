@@ -49,6 +49,7 @@ app.openapi = custom_openapi
 app.include_router(logs.router, prefix="/log", tags=["Logs"])
 app.include_router(chat.router, prefix="/chat", tags=["Chat"])
 app.include_router(user.router, tags=["Users"])
+app.include_router(money_saved.router, prefix="/money")
 
 @app.get("/")
 def root():
