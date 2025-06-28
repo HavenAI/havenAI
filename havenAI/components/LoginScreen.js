@@ -1,4 +1,5 @@
 import React, { useState , useRef} from 'react';
+import { API_BASE_URL } from '@env';
 import {
   View,
   Text,
@@ -52,9 +53,11 @@ export default function LoginScreen() {
           signInWithEmailAndPassword(auth, email, password)
             .then(async (userCredential) => {
               const token = await userCredential.user.getIdToken();
-
+              const user = userCredential.user;
+              const uid = user.uid;
+              console.log(`${API_BASE_URL}/user/onboarding`)
               try{
-                const res = await fetch("http://192.168.1.216:8000/user/onboarding", {
+                const res = await fetch(`${API_BASE_URL}/user/onboarding`, {
                   method: "GET",
                   headers: {
                     "Content-Type": "application/json",

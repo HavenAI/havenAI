@@ -6,6 +6,7 @@ import { getAuth } from 'firebase/auth';
 import MessageBubble from './MessageBubble';
 import styles from './styles';
 import { Ionicons } from '@expo/vector-icons';
+import { API_BASE_URL } from '@env';
 
 export default function TalkScreen() {
   const { nickname } = useUser();
@@ -37,9 +38,8 @@ export default function TalkScreen() {
     const token = await user.getIdToken();
 
     setIsBotTyping(true);
-    console.log(trimmed)
     try {
-      const res = await fetch('http://192.168.1.216:8000/chat/send', {
+      const res = await fetch(`${API_BASE_URL}/chat/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +74,6 @@ export default function TalkScreen() {
           <View style={styles.container}>
             <ScrollView ref={scrollViewRef} contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
               {messages.map((msg, index) => {
-                console.log(msg)
                 return(
                   <MessageBubble key={index} message={msg.text} from={msg.type} />
                 )

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { API_BASE_URL } from '@env';
 
 import { useUser } from '../../../context/UserContext';
 
@@ -10,7 +11,7 @@ export default function StreakScreen() {
 
 
   const getStreakCount = async () => {
-    const res = await fetch ("http://192.168.1.216:8000/log/user/streak",{
+    const res = await fetch (`${API_BASE_URL}/log/user/streak`,{
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -18,7 +19,6 @@ export default function StreakScreen() {
       },
     }
   );
-  console.log(res)
   if(res.ok){
     const data = await res.json();
  

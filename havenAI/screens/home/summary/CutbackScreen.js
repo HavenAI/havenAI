@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import RecommendedSection from '../../../components/RecommendedSection';
 import { useUser } from '../../../context/UserContext';
+import { API_BASE_URL } from '@env';
 
 export default function CutbackScreen() {
   // Get dynamic cutback days from context
@@ -10,7 +11,7 @@ export default function CutbackScreen() {
 
   const fetchUserDetails = async (uid) => {
     try{
-      const res = await fetch(`http://192.168.1.216:8000/user/${uid}`);
+      const res = await fetch(`${API_BASE_URL}/user/${uid}`);
       const data = await res.json();
       const createdAt = new Date(data.created_at)
 

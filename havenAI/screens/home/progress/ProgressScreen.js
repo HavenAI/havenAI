@@ -1,6 +1,7 @@
 import React ,{useState, useEffect} from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useUser } from '../../../context/UserContext';
+import { API_BASE_URL } from '@env';
 
 export default function ProgressScreen() {
 
@@ -9,7 +10,7 @@ export default function ProgressScreen() {
 
 
   const getMoneySaved = async () =>{
-    const res = await fetch ("http://192.168.1.216:8000/log/user/progress",{
+    const res = await fetch (`${API_BASE_URL}/log/user/progress`,{
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -19,7 +20,6 @@ export default function ProgressScreen() {
   );
   if(res.ok){
     const data = await res.json();
-    console.log(data)
     setMoneySaved(data["money_saved_usd"])
     
   }else{
