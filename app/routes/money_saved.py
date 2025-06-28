@@ -15,8 +15,8 @@ def read_root():
     return {"message": "Money Saved API is running"}
 
 @router.get("/progress/{user_id}", response_model=UserProgress)
-async def get_progress(user_id: str):
-    user = await users_collection.find_one({"_id": ObjectId(user_id)})
+def get_progress(user_id: str):
+    user = users_collection.find_one({"_id": ObjectId(user_id)})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     user = UserInDB(**user)
@@ -36,7 +36,7 @@ async def get_progress(user_id: str):
         current_streak = days_quit
         if current_streak > longest_streak:
             longest_streak = current_streak
-        await users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": {"current_streak": current_streak, "longest_streak": longest_streak, "updated_at": now}})
+        users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": {"current_streak": current_streak, "longest_streak": longest_streak, "updated_at": now}})
 
     # --- Badges logic ---
     badges = user.badges or []
@@ -46,7 +46,7 @@ async def get_progress(user_id: str):
     # Example: Craving Resisted Champion (if longest_streak > 7)
     if longest_streak >= 7 and "Craving Resisted Champion" not in badges:
         badges.append("Craving Resisted Champion")
-    await users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": {"badges": badges, "updated_at": now}})
+    users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": {"badges": badges, "updated_at": now}})
 
     return UserProgress(
         days_quit=days_quit,
@@ -57,11 +57,11 @@ async def get_progress(user_id: str):
     )
 
 @router.put("/users/{user_id}")
-async def update_user(user_id: str, update: UserUpdate):
+def update_user(user_id: str, update: UserUpdate):
     now = datetime.now(timezone.utc)
     update_dict = update.dict(exclude_unset=True)
     update_dict["updated_at"] = now
-    result = await users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": update_dict})
+    result = users_collection.update_one({"_id": ObjectId(user_id)}, {"$set": update_dict})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
     return {"msg": "User updated"}
