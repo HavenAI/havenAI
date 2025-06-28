@@ -58,6 +58,7 @@ app.include_router(user.router, tags=["Users"])
 app.include_router(daily_checkin.router, prefix="/daily-checkin-data", tags=["Daily Check-in"])
 app.include_router(rating.router, tags=['Rating'])
 app.include_router(checkin_status.router)
+app.include_router(money_saved.router, prefix="/money")
 
 @app.get("/")
 def root():
