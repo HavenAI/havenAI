@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import profile from '../../assets/profile.png'
 import { useUser } from '../../context/UserContext.js';
 import { useNavigation } from '@react-navigation/native';
+import { API_BASE_URL } from '@env';
 // Import tab screens
 import SummaryScreen from './summary/SummaryScreen.js';
 import ProgressCarouselScreen from './progress/ProgressCarouselScreen.js';
@@ -35,7 +36,7 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
   },[])
   const getUserName = async()=> {
     try{
-      const res = await fetch("http://192.168.1.216:8000/user/answers", {
+      const res = await fetch(`${API_BASE_URL}/user/answers`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +55,7 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
   }
   const getQuitMethod = async()=> {
     try{
-      const res = await fetch("http://192.168.1.216:8000/user/answers", {
+      const res = await fetch(`${API_BASE_URL}/user/answers`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
