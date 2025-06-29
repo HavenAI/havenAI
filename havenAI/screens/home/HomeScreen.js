@@ -144,11 +144,10 @@ export default function HomeScreen() {
     StatusBar.setBarStyle('light-content');
   }, []);
 
-  // Bottom tab icons configuration
   const bottomTabs = [
     { name: 'Home', icon: 'home-outline', activeIcon: 'home' },
     { name: 'Self-Care', icon: 'grid-outline', activeIcon: 'grid' },
-    // Avatar will be placed here
+   
     { name: 'Journal', icon: 'create-outline', activeIcon: 'create' },
     { name: 'Settings', icon: 'settings-outline', activeIcon: 'settings' }
   ];
@@ -189,7 +188,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#276270', // Main teal background
+    backgroundColor: '#276270', 
   },
   container: {
     flex: 1,
@@ -256,39 +255,39 @@ const styles = StyleSheet.create({
   },
   bottomTabBar: {
     flexDirection: 'row',
-    backgroundColor: '#264653', // Dark teal/blue from target
-    height: 60, // Adjusted height to match design
+    backgroundColor: '#264653',
+    height: 60, 
     alignItems: 'center',
     justifyContent: 'space-around',
-    paddingHorizontal: 5, // Reduced horizontal padding
+    paddingHorizontal: 5, 
   },
   bottomTab: {
     alignItems: 'center',
     justifyContent: 'center',
-    flex: 1, // Each tab takes equal space
+    flex: 1,
   },
   bottomTabText: {
-    color: '#B0D4D7', // Light teal/gray for inactive text
+    color: '#B0D4D7',
     fontSize: 10,
     fontFamily: 'Poppins-Regular',
     marginTop: 3,
   },
   activeBottomTabText: {
-    color: '#FFFFFF', // White for active text
-     // Changed from Poppins-Medium
+    color: '#FFFFFF', 
+  
       },
     avatarOuterContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 40, // Width for the avatar area
-    position: 'relative', // For positioning the background shape
-    marginBottom: -50, // Adjusted to match reference design
+    width: 40, 
+    position: 'relative', 
+    marginBottom: -50,
   },
   avatarButton: {
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    bottom: 15, // Adjusted to make avatar pop up more like in the reference design
+    bottom: 15,
     zIndex: 1,
   },
   avatarImage: {
@@ -296,7 +295,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     borderWidth: 3,
-    borderColor: '#264653', // Match bottom bar background for a seamless look
-    zIndex: 2, // Ensure avatar is above its background shape
+    borderColor: '#264653',
+    zIndex: 2, 
   },
 });
