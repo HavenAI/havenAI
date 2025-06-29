@@ -18,6 +18,7 @@ import PreferenceScreen from '../screens/settings/PreferenceScreen.js';
 import FAQScreen from '../screens/settings/FAQScreen.js';
 import PrivacyPolicyScreen from '../screens/settings/PrivacyPolicyScreen.js';
 import TermsAndConditionsScreen from '../screens/settings/TermsAndConditionsScreen.js';
+import SelfCareScreen from '../screens/selfcare/SelfCareScreen.js';
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
@@ -46,6 +47,7 @@ export default function Navigation() {
             <Stack.Screen name="FAQScreen" component={FAQScreen} />
             <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
             <Stack.Screen name="TermsAndConditions" component={TermsAndConditionsScreen} />
+            <Stack.Screen name="Self-Care" component={SelfCareScreen} />
         </Stack.Navigator>
     </NavigationContainer>
   );
