@@ -11,14 +11,31 @@ import { LinearGradient } from 'expo-linear-gradient';
 import BottomTabBar from '../../components/common/BottomTabBar.js';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import COLORS from '../../constants/colors.js';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function SelfCareScreen() {
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
   const [activeBottomTab, setActiveBottomTab] = useState('Self-Care');
 
   const handlePress = (exercise) => {
-    Alert.alert(`You tapped: ${exercise}`);
+    switch (exercise) {
+      case 'Meditation':
+        navigation.navigate('Meditation');
+        break;
+      case 'Breathing':
+        navigation.navigate('Breathing');
+        break;
+      case 'Reflection':
+        navigation.navigate('Reflection');
+        break;
+      default:
+        Alert.alert(`You tapped: ${exercise}`);
+    }
   };
+  
+  
 
   return (
     <View style={styles.safeArea}>
@@ -32,7 +49,7 @@ export default function SelfCareScreen() {
       <View style={styles.container}>
       <Text style={styles.extext}>Exercises</Text>
         <View style={styles.cardsWrapper}>
-          <TouchableOpacity onPress={() => handlePress('Practice Meditation')}>
+          <TouchableOpacity onPress={() => handlePress('Meditation')}>
             <LinearGradient
               colors={['#ACC8C3', '#276270']}
               style={styles.card}
@@ -43,7 +60,7 @@ export default function SelfCareScreen() {
             </LinearGradient>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => handlePress('Breathing Techniques')}>
+          <TouchableOpacity onPress={() => handlePress('Breathing')}>
             <LinearGradient
               colors={['#CBCEEB', '#5B6199']}
               style={styles.card}
