@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
-from app.routes import logs, chat, onboarding, user, daily_checkin, rating, checkin_status
+from app.routes import logs, chat, onboarding, user, daily_checkin, rating, checkin_status, money_saved
 
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
