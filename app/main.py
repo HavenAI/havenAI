@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
-from app.routes import logs, chat, onboarding, user, daily_checkin, rating, checkin_status, money_saved
-
+from app.routes import logs, chat, onboarding, user, daily_checkin, rating, checkin_status,  money_saved, health_score
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
 
@@ -18,6 +17,7 @@ app = FastAPI(title="Haven AI Backend",
         {"name": "Users", "description": "User Data Retrieval"},
         {"name": "Onboarding", "description": "Onboarding quiz"},
         {"name": "Daily Check-in", "description": "Daily Checkins"},
+        {"name": "Health Score", "description": "Initial and Latest Health score"},
         {"name": "Rating", "description": "Rating Star Count"}
     ]
 
@@ -59,6 +59,7 @@ app.include_router(daily_checkin.router, prefix="/daily-checkin-data", tags=["Da
 app.include_router(rating.router, tags=['Rating'])
 app.include_router(checkin_status.router)
 app.include_router(money_saved.router, prefix="/money")
+app.include_router(health_score.router, prefix="/health-score", tags=["Health Score"])
 
 @app.get("/")
 def root():
@@ -68,3 +69,4 @@ def root():
 @app.on_event("startup")
 def startup_event():
     schedule_daily_checkin()
+
