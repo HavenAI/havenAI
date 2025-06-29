@@ -3,9 +3,18 @@ import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Image } from "reac
 import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+
 import BottomTabBar from "../../components/common/BottomTabBar.js";
 import BackIcon from "../../assets/BackIcon.png";
 import COLORS from "../../constants/colors.js";
+import FeedbackIcon from "../../assets/feedback.png";
+import FAQIcon from "../../assets/FAQIcon.png";
+import PrivacyPolicyIcon from "../../assets/privacy.png";
+import TermsAndConditionsIcon from "../../assets/terms.png";
+import PreferencesIcon from "../../assets/PreferencesIcon.png";
+import NotificationsIcon from "../../assets/notification.png";
+import ShareIcon from "../../assets/ShareIcon.png";
+
 
 export default function SettingScreen() {
   const insets = useSafeAreaInsets();
@@ -13,14 +22,15 @@ export default function SettingScreen() {
   const [activeBottomTab, setActiveBottomTab] = useState("Settings");
 
   const settingsItems = [
-    { title: 'Preferences', screen: 'Preferences' },
-    { title: 'Notifications', screen: 'Notifications' },
-    { title: 'Share' },
-    { title: 'Feedback'},
-    { title: 'FAQ' , screen: 'FAQScreen'},
-    { title: 'Privacy Policy' , screen: 'PrivacyPolicy'},
-    { title: 'Terms & Conditions' , screen: 'TermsAndConditions' },
+    { title: 'Preferences', screen: 'Preferences', icon: PreferencesIcon },
+    { title: 'Notifications', screen: 'Notifications', icon: NotificationsIcon },
+    { title: 'Share', icon: ShareIcon },
+    { title: 'Feedback', screen: 'Feedback', icon: FeedbackIcon },
+    { title: 'FAQ', screen: 'FAQScreen', icon: FAQIcon },
+    { title: 'Privacy Policy', screen: 'PrivacyPolicy', icon: PrivacyPolicyIcon },
+    { title: 'Terms & Conditions', screen: 'TermsAndConditions', icon: TermsAndConditionsIcon },
   ];
+  
 
   return (
     <View style={styles.safeArea}>
@@ -43,10 +53,14 @@ export default function SettingScreen() {
             style={styles.item}
             onPress={() => item.screen && navigation.navigate(item.screen)}
           >
-            <Text style={styles.itemText}>{item.title}</Text>
+            <View style={styles.itemContent}>
+              <Image source={item.icon} style={styles.icon} />
+              <Text style={styles.itemText}>{item.title}</Text>
+            </View>
           </TouchableOpacity>
         ))}
       </View>
+
 
       {/* Bottom Tab Bar */}
       <BottomTabBar activeBottomTab={activeBottomTab} setActiveBottomTab={setActiveBottomTab} />
@@ -87,6 +101,17 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontFamily: 'Poppins',
   },
+  itemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    marginRight: 12,
+    resizeMode: 'contain',
+  },
+  
   headerTitle: {
     fontSize: 20,
     fontFamily: 'Poppins',

@@ -25,6 +25,7 @@ import BreathingIntroScreen from '../screens/selfcare/BreathingIntroScreen.js';
 import BreathingStartScreen from '../screens/selfcare/BreathingStartScreen.js';
 import BreathingProgressScreen from '../screens/selfcare/BreathingProgressScreen.js';
 import BreathingCompleteScreen from '../screens/selfcare/BreathingCompleteScreen.js';
+import FeedbackScreen from '../screens/settings/FeedbackScreen.js';
 
 const Stack = createNativeStackNavigator();
 
@@ -54,6 +55,7 @@ export default function Navigation() {
             <Stack.Screen name="FAQScreen" component={FAQScreen} />
             <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
             <Stack.Screen name="TermsAndConditions" component={TermsAndConditionsScreen} />
+            <Stack.Screen name="Feedback" component={FeedbackScreen} />
             <Stack.Screen name="Self-Care" component={SelfCareScreen} />
             <Stack.Screen name="Reflection" component={ReflectionScreen} />
             <Stack.Screen name="Meditation" component={MeditationScreen} />
@@ -61,6 +63,7 @@ export default function Navigation() {
             <Stack.Screen name="BreathingStart" component={BreathingStartScreen} />
             <Stack.Screen name="BreathingProgress" component={BreathingProgressScreen} />
             <Stack.Screen name="BreathingComplete" component={BreathingCompleteScreen} />
+            
 
         </Stack.Navigator>
     </NavigationContainer>
