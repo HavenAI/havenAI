@@ -18,6 +18,14 @@ import PreferenceScreen from '../screens/settings/PreferenceScreen.js';
 import FAQScreen from '../screens/settings/FAQScreen.js';
 import PrivacyPolicyScreen from '../screens/settings/PrivacyPolicyScreen.js';
 import TermsAndConditionsScreen from '../screens/settings/TermsAndConditionsScreen.js';
+import SelfCareScreen from '../screens/selfcare/SelfCareScreen.js';
+import ReflectionScreen from '../screens/selfcare/ReflectionScreen.js';
+import MeditationScreen from '../screens/selfcare/MeditationScreen.js';
+import BreathingIntroScreen from '../screens/selfcare/BreathingIntroScreen.js';
+import BreathingStartScreen from '../screens/selfcare/BreathingStartScreen.js';
+import BreathingProgressScreen from '../screens/selfcare/BreathingProgressScreen.js';
+import BreathingCompleteScreen from '../screens/selfcare/BreathingCompleteScreen.js';
+
 const Stack = createNativeStackNavigator();
 
 export default function Navigation() {
@@ -46,6 +54,14 @@ export default function Navigation() {
             <Stack.Screen name="FAQScreen" component={FAQScreen} />
             <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicyScreen} />
             <Stack.Screen name="TermsAndConditions" component={TermsAndConditionsScreen} />
+            <Stack.Screen name="Self-Care" component={SelfCareScreen} />
+            <Stack.Screen name="Reflection" component={ReflectionScreen} />
+            <Stack.Screen name="Meditation" component={MeditationScreen} />
+            <Stack.Screen name="Breathing" component={BreathingIntroScreen} />
+            <Stack.Screen name="BreathingStart" component={BreathingStartScreen} />
+            <Stack.Screen name="BreathingProgress" component={BreathingProgressScreen} />
+            <Stack.Screen name="BreathingComplete" component={BreathingCompleteScreen} />
+
         </Stack.Navigator>
     </NavigationContainer>
   );
