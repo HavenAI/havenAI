@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
-from app.routes import logs, chat, onboarding, user, daily_checkin, rating, checkin_status, health_score
-
+from app.routes import logs, chat, onboarding, user, daily_checkin, rating, checkin_status,  money_saved, health_score
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
 
@@ -59,6 +58,7 @@ app.include_router(user.router, tags=["Users"])
 app.include_router(daily_checkin.router, prefix="/daily-checkin-data", tags=["Daily Check-in"])
 app.include_router(rating.router, tags=['Rating'])
 app.include_router(checkin_status.router)
+app.include_router(money_saved.router, prefix="/money")
 app.include_router(health_score.router, prefix="/health-score", tags=["Health Score"])
 
 @app.get("/")

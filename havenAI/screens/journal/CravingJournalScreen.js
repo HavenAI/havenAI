@@ -11,6 +11,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import COLORS from '../../constants/colors';
 import { formatDateTime } from '../../utils/time.js';
 import { useUser } from '../../context/UserContext.js';
+import { API_BASE_URL } from '@env';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,7 +30,7 @@ function LoggingCravingVaping({topInset }) {
 
   const getLoggingData = async () =>{
 
-    const response = await fetch('http://192.168.1.216:8000/log/craving', {
+    const response = await fetch(`${API_BASE_URL}/log/craving`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -67,7 +68,7 @@ function LoggingCravingVaping({topInset }) {
     setShowForm(false);
 
     try{
-      const response = await fetch('http://192.168.1.216:8000/log/craving', {
+      const response = await fetch(`${API_BASE_URL}/log/craving`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

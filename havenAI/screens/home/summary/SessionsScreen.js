@@ -4,7 +4,7 @@ import RecommendedSection from '../../../components/RecommendedSection';
 import { useUser } from '../../../context/UserContext';
 import { useFocusEffect ,useIsFocused} from '@react-navigation/native';
 import { useCallback } from 'react';
-
+import { API_BASE_URL } from '@env';
 export default function SessionsScreen({visible}) {
   const MAX_BASELINE = 20;
   const { token , uid} = useUser();
@@ -15,7 +15,7 @@ export default function SessionsScreen({visible}) {
 
   const fetchSessionData = async () => {
     try {
-      const res = await fetch('http://192.168.1.216:8000/log/user/vapes_count_per_day', {
+      const res = await fetch(`${API_BASE_URL}/log/user/vapes_count_per_day`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,

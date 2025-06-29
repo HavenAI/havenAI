@@ -6,13 +6,14 @@ import fifteenconvo from '../../../assets/fifteenconvo.png'
 import thirtyconvo from '../../../assets/thirtyconvo.png'
 import COLORS from '../../../constants/colors.js'
 import { useUser } from '../../../context/UserContext.js';
+import { API_BASE_URL } from '@env';
 
 export default function BatchScreen() {
   const {token} = useUser();
   const[interventionsCount, setInterventionsCount] = useState(0);
 
   const getInterventionCount = async () => {
-    const res = await fetch ("http://192.168.1.216:8000/interventions/count",{
+    const res = await fetch (`${API_BASE_URL}/interventions/count`,{
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -22,7 +23,6 @@ export default function BatchScreen() {
   );
   if(res.ok){
     const data = await res.json();
-    console.log(data)
     setInterventionsCount(data["count"])
     
   }else{

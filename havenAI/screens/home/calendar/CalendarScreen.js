@@ -51,7 +51,7 @@ export default function CalendarScreen() {
   };
 
   const getNicotineFreeDates = async () => {
-    const res = await fetch('http://192.168.1.216:8000/log/user/nicotine_free_dates', {
+    const res = await fetch(`${API_BASE_URL}/log/user/nicotine_free_dates`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ export default function CalendarScreen() {
   };
 
   const getCutbackDates = async () => {
-    const res = await fetch('http://192.168.1.216:8000/log/user/cutback_dates', {
+    const res = await fetch(`${API_BASE_URL}/log/user/cutback_dates`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

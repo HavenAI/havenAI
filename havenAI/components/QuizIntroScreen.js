@@ -12,7 +12,7 @@ import OptionButton from './common/OptionButton.js';
 import { getAuth } from 'firebase/auth';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
-
+import { API_BASE_URL } from '@env';
 
 export default function QuizIntroScreen() {
     const {nickname} = useUser();
@@ -131,7 +131,7 @@ export default function QuizIntroScreen() {
               };
               
               try{
-                const res = await fetch("http://192.168.1.216:8000/user/onboarding", {
+                const res = await fetch(`${API_BASE_URL}/user/onboarding`, {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",

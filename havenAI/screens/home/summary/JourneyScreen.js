@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, Text } from 'react-native';
 import { useUser } from '../../../context/UserContext';
+import { API_BASE_URL } from '@env';
 
 export default function JourneyScreen() {
     const {uid} = useUser();
@@ -8,7 +9,7 @@ export default function JourneyScreen() {
 
     const fetchUserJoinDate = async(uid)=>{
         try{
-            const res = await fetch(`http://192.168.1.216:8000/user/${uid}`)
+            const res = await fetch(`${API_BASE_URL}/user/${uid}`)
             const data = await res.json();
             const createdAt = new Date(data.created_at);
             setJoinedDate(createdAt.toDateString());
