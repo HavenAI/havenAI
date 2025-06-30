@@ -26,6 +26,8 @@ async def send_feedback(feedback: dict, credentials: HTTPAuthorizationCredential
     message["Subject"] = "New App Feedback"
     message.set_content(f"User ID: {user_id}\n\nMessage:\n{feedback.get('message', '')}\n\nRating: {feedback.get('rating', 'N/A')}")
 
+    
+
     try:
         await aiosmtplib.send(
             message,
