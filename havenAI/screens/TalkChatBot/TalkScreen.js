@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, ScrollView, KeyboardAvoidingView, TextInput, TouchableOpacity, Text, Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
+import { View, ScrollView, KeyboardAvoidingView, TextInput, TouchableOpacity, Image, Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useUser } from '../../context/UserContext.js';
 import { getAuth } from 'firebase/auth';
@@ -7,8 +7,11 @@ import MessageBubble from './MessageBubble';
 import styles from './styles';
 import { Ionicons } from '@expo/vector-icons';
 import { API_BASE_URL } from '@env';
+import xmark from '../../assets/xmark.png';
+import { useNavigation } from '@react-navigation/native';
 
 export default function TalkScreen() {
+  const navigation = useNavigation();
   const { nickname } = useUser();
   const scrollViewRef = useRef();
   const [messages, setMessages] = useState([
@@ -69,6 +72,12 @@ export default function TalkScreen() {
     style={{ flex: 1 }} 
     behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     keyboardVerticalOffset={Platform.OS === 'ios' ? 80 : 0}>
+      <TouchableOpacity
+                  onPress={() => navigation.navigate('Home')}
+                  style={styles.closeButton}
+                  >
+                  <Image source={xmark} style={styles.closeIcon} />
+                  </TouchableOpacity>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <LinearGradient colors={['#66B2A3', '#CBCEEB']} style={[styles.background,{flex: 1}]}>
           <View style={styles.container}>

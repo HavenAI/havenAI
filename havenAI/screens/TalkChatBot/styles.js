@@ -14,6 +14,17 @@ export default StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 20,
   },
+  closeButton: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    zIndex: 1,
+  },
+  closeIcon: {
+    width: 24,
+    height: 24,
+    tintColor: '#FAF4EF',
+  },  
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
