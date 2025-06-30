@@ -144,6 +144,7 @@ def update_latest_healthscore(credentials: HTTPAuthorizationCredentials = Depend
 @router.get("/get")
 def get_health_score(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     user = verify_token(credentials.credentials)
+    print(user)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid token")
 
