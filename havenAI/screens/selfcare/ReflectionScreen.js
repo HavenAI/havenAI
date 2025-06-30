@@ -35,13 +35,7 @@ export default function ReflectionScreen() {
             “I want to be free from{"\n"}cravings and proud of how{"\n"}far I’ve come.”
           </Text>
 
-         
-
-          <TouchableOpacity style={styles.button} onPress={() => {/* TODO: Add handler */}}>
-            <Text style={styles.buttonText}>Update My Message</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.button} onPress={() => {/* TODO: Navigate to Chat */}}>
+          <TouchableOpacity style={styles.button} onPress={() => {navigation.navigate('Talk');}}>
             <Text style={styles.buttonText}>Open Reflection Chat</Text>
           </TouchableOpacity>
         </View>
