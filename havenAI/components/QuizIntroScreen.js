@@ -104,16 +104,17 @@ export default function QuizIntroScreen() {
               const mappedPayload = {
                 email: user.email,
                 nickname: nickname,
-                goal: flatten(answers.cause),
+                goal: flatten(answers.goal),
                 ageRange: flatten(answers.ageRange),
                 vapeType: flatten(answers.vapeType),
                 nicotineStrength: flatten(answers.nicotineStrength),
                 craveTime: flatten(answers.cravingTime),
-                craveTriggers: [flatten(answers.stressTriggers)],
+                craveTriggers: [flatten(answers.cause)],
                 vapeFrequency: flatten(answers.frequency),
+                vapeRefill: flatten(answers.vapeRefill),
+                expense: flatten(answers.expense),
                 quitHistory: flatten(answers.quitBefore),
                 cravingFeeling: flatten(answers.cravingFeelings),
-                vapingEmotion: flatten(answers.vapeFeeling),
                 cravingSupport: flatten(answers.supportType),
                 safeSpots: flatten(answers.calmingThings),
                 stressTriggers: flatten(answers.stressTriggers),
@@ -123,11 +124,8 @@ export default function QuizIntroScreen() {
                 aiTone: flatten(answers.tone),
                 aiTalkative: flatten(answers.talkLevel),
                 checkInFrequency: flatten(answers.checkinFrequency),
-                openNotes: flatten(answers.openNotes || ""),
                 quitMethod: flatten(answers.quitMethod),
                 futureSelfMessage: flatten(answers.futureSelfMessage),
-                vapeRefill: flatten(answers.vapeRefill),
-                expense: flatten(answers.expense)
               };
               
               try{

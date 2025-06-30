@@ -74,6 +74,19 @@ const quizSections = [
           multiSelect: true
         },
         {
+          id: "frequency",
+          type: "radio",
+          question: "How many times a day do you typically vape?",
+          options: [
+            "1 - 2 times",
+            "3 - 5 times",
+            "6 - 10 times",
+            "More than 10 times",
+            "I don't keep track"
+          ],
+          multiSelect: true
+        },
+        {
           id: "vapeRefill",
           type: "radio",
           question:"On average, how often do you buy a new vape or refill?",
@@ -89,19 +102,6 @@ const quizSections = [
           id: "expense",
           type: "text",
           question: "How much do you usually spend each time you buy a vape or refill?"
-        },
-        {
-          id: "frequency",
-          type: "radio",
-          question: "How many times a day do you typically vape?",
-          options: [
-            "1 - 2 times",
-            "3 - 5 times",
-            "6 - 10 times",
-            "More than 10 times",
-            "I don't keep track"
-          ],
-          multiSelect: true
         },
         {
           id: "quitBefore",
@@ -124,22 +124,10 @@ const quizSections = [
           ],
           multiSelect: true
         },
-        {
-          id: "quitMethod",
-          type: "radio",
-          question: "What is your preferred way to quit vaping?",
-          options: ["Quit cold turkey", "Quit gradually"]
-        },
-        {
-          id: "futureSelfMessage",
-          type: "text",
-          question:
-            "Imagine it’s 6 months from now and you’ve fully quit vaping. What would your future self say to you right now to keep you going? (Tip: Think about how you want to feel — e.g. free, healthy, proud — and let those feelings guide your words.)"
-        }
       ]
     },
     {
-      section: "Personalize Your Support",
+      section: "Personalize Your Support ",
       questions: [
         {
           id: "supportType",
@@ -209,24 +197,23 @@ const quizSections = [
           type: "radio",
           question: "How often would you like me to check-in on your mood, cravings and triggers?",
           options: [
-            "Hourly",
             "3 times a day",
             "2 times a day",
-            "Daily",
-            "Weekly"
+            "Daily"
           ],
           multiSelect: true
         },
-  
         {
-          id: "vapeFeeling",
-          type: "text",
-          question: "In one word, how does vaping make you feel?"
+          id: "quitMethod",
+          type: "radio",
+          question: "What is your preferred way to quit vaping?",
+          options: ["Quit cold turkey", "Quit gradually"]
         },
         {
-          id: "additionalNotes",
+          id: "futureSelfMessage",
           type: "text",
-          question: "Anything you'd like to tell us about your journey with vaping?"
+          question:
+            "Imagine it’s 6 months from now and you’ve fully quit vaping. What would your future self say to you right now to keep you going? (Tip: Think about how you want to feel — e.g. free, healthy, proud — and let those feelings guide your words.)"
         }
       ]
     }
