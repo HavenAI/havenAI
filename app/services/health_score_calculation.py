@@ -30,9 +30,9 @@ def calculate_health_score(answer: dict) -> dict:
     #Mental Health Score
     mental_score = 100
     if "When I'm stressed or anxious" in q5 or any(x in q6 for x in ["Stress/overwhelm","Emotions (e.g. sadness, anxiety)"]):
-        mental_score -= 20
+        mental_score -= 25
     if len(set(q11).intersection({"Mental tug of war to get a vape","General discomfort","Dizziness or lack of focus","Jittery or shaking"})) >= 2:
-        mental_score -= 20
+        mental_score -= 25
     if q16 == "Yes":
         mental_score += 3
     if q19 == "I want full conversations" or q20 in ["3 times a day","2 times a day"]:
@@ -68,16 +68,16 @@ def calculate_health_score(answer: dict) -> dict:
     #Heart Health Score
     heart_score = 100
     heart_score -= {
-        "Yes - High (e.g. 50mg)": 20,
-        "Medium (e.g. 20–35mg)": 15,
-        "Low (e.g. <10mg)": 5
+        "Yes - High (e.g. 50mg)": 25,
+        "Medium (e.g. 20–35mg)": 20,
+        "Low (e.g. <10mg)": 15
     }.get(q4, 10)
     heart_score -= {
-        "More than 10 times":20,
-        "6 - 10 times": 15,
-        "3 - 5 times": 5
+        "More than 10 times":25,
+        "6 - 10 times": 20,
+        "3 - 5 times": 15
     }.get(q7, 10)
-    heart_score += 5 if q10 == "Yes" else -5
+    heart_score += 5 if q10 == "Yes" else -10
     # heart_score += 10 if q2 == "I want to quit completely" or 5 if q2 == "I want to cut down gradually"
     heart_score = clamp(heart_score, 30, 100)
 
