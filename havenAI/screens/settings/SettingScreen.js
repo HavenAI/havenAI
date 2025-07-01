@@ -22,9 +22,9 @@ export default function SettingScreen() {
   const [activeBottomTab, setActiveBottomTab] = useState("Settings");
 
   const settingsItems = [
-    { title: 'Preferences', screen: 'Preferences', icon: PreferencesIcon },
+    // { title: 'Preferences', screen: 'Preferences', icon: PreferencesIcon },
     { title: 'Notifications', screen: 'Notifications', icon: NotificationsIcon },
-    { title: 'Share', icon: ShareIcon },
+    // { title: 'Share', icon: ShareIcon },
     { title: 'Feedback', screen: 'Feedback', icon: FeedbackIcon },
     { title: 'FAQ', screen: 'FAQScreen', icon: FAQIcon },
     { title: 'Privacy Policy', screen: 'PrivacyPolicy', icon: PrivacyPolicyIcon },
