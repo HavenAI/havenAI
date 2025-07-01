@@ -21,6 +21,7 @@ import { validateEmail, validatePassword } from '../utils/validation.js';
 import * as Animatable from 'react-native-animatable';
 import {auth} from '../utils/firebase.js';
 import{ signInWithEmailAndPassword } from 'firebase/auth';
+import ForgotPasswordScreen from './ForgotPasswordScreen.js';
 //import { useGoogleAuth } from '../utils/googleAuth';
 import {useUser} from '../context/UserContext.js'
 export default function LoginScreen() {
