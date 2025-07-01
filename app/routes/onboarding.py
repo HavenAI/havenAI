@@ -34,7 +34,7 @@ def save_onboarding(
         },
         upsert=True
     )
-    schedule_daily_checkin(user_id)
+    schedule_daily_checkin()
     return {"message": "Onboarding saved successfully and check-in scheduled"}
 
 @router.get("/user/onboarding")

@@ -102,9 +102,9 @@ export default function QuizIntroScreen() {
                 Array.isArray(value) ? value.join(", ") : value;
               
               const mappedPayload = {
-                email: user.email,
+                // email: user.email,
                 nickname: nickname,
-                goal: flatten(answers.goal),
+                goal: flatten(answers.goal) ?? "",
                 ageRange: flatten(answers.ageRange),
                 vapeType: flatten(answers.vapeType),
                 nicotineStrength: flatten(answers.nicotineStrength),
@@ -125,9 +125,11 @@ export default function QuizIntroScreen() {
                 aiTalkative: flatten(answers.talkLevel),
                 checkInFrequency: flatten(answers.checkinFrequency),
                 quitMethod: flatten(answers.quitMethod),
-                futureSelfMessage: flatten(answers.futureSelfMessage),
+                futureSelfMessage: flatten(answers.futureSelfMessage) ?? "",
               };
-              
+              console.log("Mapped Payload:", mappedPayload);
+              console.log("Final answer map before submit:", answers);
+
               try{
                 const res = await fetch(`${API_BASE_URL}/user/onboarding`, {
                   method: "POST",
@@ -159,7 +161,6 @@ export default function QuizIntroScreen() {
             }
         }
       }
-
     }
 
     const handleOptionSelect = (option)=>{
@@ -194,10 +195,12 @@ export default function QuizIntroScreen() {
         if (chatInput.trim()) {
             // Add user message to chat
             const userText = chatInput.trim();
+            
             setMessages(prev => [...prev, { type: 'user', text: userText }]);
             
             if (quizStarted && currentIndex > 0){
                 const currentQuestion = allQuestions[currentIndex];
+                console.log("Typing answer for:", currentQuestion.id, "=>", userText);
                 setAnswers({...answers, [currentQuestion.id]: userText});
                 proceedToNextQuestion();
             }
