@@ -95,7 +95,7 @@ export default function HealthStatsScreen() {
             <>
               <View style={styles.circleRow}>
                 <HealthCircle label="Lung Functionality" value={scores.lung ?? 0} />
-                <HealthCircle label="Blood Pressure" value={scores.heart ?? 0} />
+                <HealthCircle label="Heart Health" value={scores.heart ?? 0} />
               </View>
       
               <View style={styles.circleRow}>
