@@ -238,12 +238,19 @@ function LoggingCravingVaping({topInset }) {
     <View style={styles.separator} />
     <Text style={styles.previousLogsTitle}>Previous Logs</Text>
 
-      {logs.map((log, index) => (
-        <View key={index} style={styles.logCard}>
+      {logs.map((log, index) =>{
+        const isVaping = log.type?.toLowerCase() === 'vaping';
+        const cardStyle = isVaping ? styles.vapingCard : styles.cravingCard;
+      
+      return (
+        <View key={index} style={[styles.logCard, cardStyle]}>
           <View style={styles.logCardHeader}>
             <Text style={styles.logTime}>{formatDateTime(new Date(log.timestamp))}</Text>
-            <View style={styles.logBadge}>
-              <Text style={styles.logBadgeText}>{log.mood}</Text>
+            <View style={styles.tagRow}>
+              <View style={styles.logTag}><Text style={styles.logTagText(log.type)}>{log.type}</Text></View>
+              <View style={styles.logBadge}>
+                <Text style={styles.logBadgeText}>{log.mood}</Text>
+              </View>
             </View>
           </View>
           <View style={styles.logRow}>
@@ -252,7 +259,8 @@ function LoggingCravingVaping({topInset }) {
           </View>
           <Text style={styles.logNote} numberOfLines={1}>{log.notes}</Text>
         </View>
-      ))}
+      )
+      })}
       
     </ScrollView>
   );
@@ -297,7 +305,35 @@ const styles = StyleSheet.create({
     color: COLORS.textPrimary,
     fontFamily: 'Poppins',
   },
+  vapingCard: {
+    backgroundColor: '#FFD6D7',  // soft red / pink for vaping
+    height:100
+  },
+  tagRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   
+  logTag:{
+    backgroundColor: '#fff',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    marginRight: 6,
+  },
+  
+  logTagText: (type) => ({
+    color: type?.toLowerCase() === 'vaping' ? '#E86868' : '#68A8E8',
+    fontSize: 14,
+    fontFamily: 'Poppins',
+    fontWeight: '600',
+    textTransform: 'capitalize',
+  }),
+  cravingCard: {
+    backgroundColor: '#C7E5F9',  // soft blue for craving
+    height:100
+  },
   logNewEntryWrapper: {
     alignItems: 'center',
     marginTop: 12,
