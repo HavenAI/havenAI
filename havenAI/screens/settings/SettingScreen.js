@@ -23,7 +23,7 @@ export default function SettingScreen() {
 
   const settingsItems = [
     // { title: 'Preferences', screen: 'Preferences', icon: PreferencesIcon },
-    { title: 'Notifications', screen: 'Notifications', icon: NotificationsIcon },
+    // { title: 'Notifications', screen: 'Notifications', icon: NotificationsIcon },
     // { title: 'Share', icon: ShareIcon },
     { title: 'Feedback', screen: 'Feedback', icon: FeedbackIcon },
     { title: 'FAQ', screen: 'FAQScreen', icon: FAQIcon },
