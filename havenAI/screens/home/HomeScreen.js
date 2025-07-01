@@ -15,7 +15,7 @@ import SessionsScreen from './summary/SessionsScreen.js';
 import SummaryCarouselScreen from './summary/SummaryCarouselScreen.js';
 import BottomTabBar from '../../components/common/BottomTabBar.js';
 
-
+import { getAuth } from 'firebase/auth';
 const Stack = createNativeStackNavigator();
 
 
@@ -28,12 +28,28 @@ const getGreeting = () => {
 
 // Custom Tab Navigator for Summary, Progress, Calendar, Cutback, and Sessions
 function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
+  const [showMenu, setShowMenu] = useState(false);
+  const navigation = useNavigation();
+  const { setToken, setUid } = useUser();
+  const auth = getAuth();
   const [userName, setUserName] = useState('');
   const [userQuitMethod, setUserQuitMethod] = useState('');
+
   useEffect(()=>{
     getUserName()
     getQuitMethod()
   },[])
+
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      setToken(null);
+      setUid(null);
+      navigation.replace('LoginScreen');
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
+  };
   const getUserName = async()=> {
     try{
       const res = await fetch(`${API_BASE_URL}/user/answers`, {
@@ -88,11 +104,22 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%' }}>
           <Text style={styles.username}>{userName}</Text>
-          <TouchableOpacity style={styles.profileIcon}>
-            <Image
-            source={profile} style={ {size: 24, color: "#fff"}}
-            />
+          <View style={styles.profileWrapper}>
+          <TouchableOpacity onPress={() => setShowMenu(prev => !prev)}>
+            <Image source={profile} style={styles.profileImage} />
           </TouchableOpacity>
+
+          {showMenu && (
+            <View style={styles.dropdownContainer}>
+              <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                <Text style={styles.logoutText}>Log Out</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
+
+
         </View>
       </View>
       
@@ -224,6 +251,37 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     marginBottom: 5,
   },
+  profileWrapper: {
+    position: 'relative',
+    marginLeft: 'auto',
+  },
+  dropdownContainer: {
+    position: 'absolute',
+    top: 45,
+    right: 0,
+    width: 120,
+    backgroundColor: '#CBCEEB',
+    borderRadius: 8,
+    paddingVertical: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+    zIndex: 999,
+  },
+  
+  logoutButton: {
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  
+  logoutText: {
+    color: '#276270',
+    fontSize: 16,
+    fontFamily: 'Poppins',
+  },
+  
   tab: {
     paddingVertical: 10,
     paddingHorizontal: 5,
