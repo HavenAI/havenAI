@@ -14,6 +14,7 @@ import CutbackScreen from './summary/CutbackScreen.js';
 import SessionsScreen from './summary/SessionsScreen.js';
 import SummaryCarouselScreen from './summary/SummaryCarouselScreen.js';
 import BottomTabBar from '../../components/common/BottomTabBar.js';
+import Toast from 'react-native-toast-message';
 
 import { getAuth } from 'firebase/auth';
 const Stack = createNativeStackNavigator();
@@ -166,10 +167,47 @@ export default function HomeScreen() {
   const [activeTab, setActiveTab] = React.useState('Summary');
   const [activeBottomTab, setActiveBottomTab] = React.useState('Home');
   const insets = useSafeAreaInsets();
+  const { token } = useUser();
   
   React.useEffect(() => {
     StatusBar.setBarStyle('light-content');
   }, []);
+
+  const checkForCheckin = async () => {
+    console.log(token)
+    try {
+      console.log("hello")
+      const res = await fetch(`${API_BASE_URL}/checkin/status`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+
+      const data = await res.json();
+      console.log('Check-in data:', data);
+      if (data?.checkin_due) {
+        Toast.show({
+          type: 'info',
+          text1: '⏰ Time to Check In',
+          text2: 'How are you feeling? Log it from the Journal 💙',
+          position: 'top',
+          visibilityTime: 5000,
+        });
+      }
+      
+    } catch (error) {
+      console.error('Check-in toast error:', error);
+    }
+  };
+
+  // useEffect(() => {
+  //   checkForCheckin(); // Initial check on mount
+  //   // const interval = setInterval(checkForCheckin, 5 * 60 * 1000); // Every 5 minutes
+
+  //   // return () => clearInterval(interval);
+  // }, []);
 
   const bottomTabs = [
     { name: 'Home', icon: 'home-outline', activeIcon: 'home' },
