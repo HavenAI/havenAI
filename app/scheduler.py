@@ -24,7 +24,7 @@ def morning_checkin_job(user_id):
 
 # Schedule check-ins based on user preference
 def schedule_checkins_from_onboarding():
-    users = users_collection.find({"onboarding.checkInFrequency": {"$exists": True}})
+    users = users_collection.find({"onboarding.answers.checkInFrequency": {"$exists": True}})
     
     for user in users:
         user_id = user["_id"]
@@ -59,4 +59,8 @@ scheduler = BackgroundScheduler(timezone="UTC")
 def schedule_daily_checkin():
     scheduler.start()
     schedule_checkins_from_onboarding()
+    
+
+
+
 
