@@ -3,10 +3,15 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from app.firebase_auth import verify_token
 from pymongo import MongoClient
 from datetime import datetime, timedelta
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter()
 auth_scheme = HTTPBearer()
-client = MongoClient("MONGO_URI")
+
+client = MongoClient(os.getenv("MONGO_URI"))
 db = client["haven"]
 checkin_flags = db["checkin_flags"]
 
@@ -48,3 +53,6 @@ def get_pending_checkins(credentials: HTTPAuthorizationCredentials = Depends(aut
         item["timestamp"] = item["timestamp"].isoformat()
 
     return {"pending_checkins": pending}
+
+
+

@@ -2,12 +2,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer
 
-from app.routes import logs, chat, onboarding, user, daily_checkin, rating, checkin_status, money_saved, health_score, feedback 
+from app.routes import logs, chat, onboarding, user, daily_checkin, rating, checkin_status, money_saved, health_score, feedback
 
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import HTTPBearer
 
-from app.scheduler import schedule_daily_checkin
+from app.scheduler import schedule_daily_checkin, schedule_checkins_from_onboarding
 
 
 app = FastAPI(title="Haven AI Backend",
@@ -73,6 +73,8 @@ def root():
 
 
 @app.on_event("startup")
-def startup_event():
-    schedule_daily_checkin()
+async def startup_event():
+    schedule_daily_checkin()  # starts the scheduler
+    schedule_checkins_from_onboarding()  # schedules check-ins for all users with onboarding
+
 
