@@ -29,4 +29,4 @@ pyrebase4
 apscheduler
 uvicorn[standard]
 pytz
-
+torch
