@@ -27,3 +27,4 @@ transformers
 firebase_admin
 pyrebase4
 apscheduler
+uvicorn[standard]
