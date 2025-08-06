@@ -9,6 +9,7 @@ export default function JourneyScreen() {
 
     const fetchUserJoinDate = async(uid)=>{
         try{
+            console.log(`${API_BASE_URL}/user/${uid}`)
             const res = await fetch(`${API_BASE_URL}/user/${uid}`)
             const data = await res.json();
             const createdAt = new Date(data.created_at);

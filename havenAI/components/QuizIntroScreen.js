@@ -129,7 +129,7 @@ export default function QuizIntroScreen() {
               };
               console.log("Mapped Payload:", mappedPayload);
               console.log("Final answer map before submit:", answers);
-
+              console.log(`${API_BASE_URL}/user/onboarding`);
               try{
                 const res = await fetch(`${API_BASE_URL}/user/onboarding`, {
                   method: "POST",

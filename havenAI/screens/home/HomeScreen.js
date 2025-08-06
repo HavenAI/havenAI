@@ -63,9 +63,11 @@ function CustomTopTabNavigator({ activeTab, setActiveTab, topInset }) {
       if (res.ok) {
           const data = await res.json();
           setUserName(data["name"])
+          console.log("User name fetched successfully:", data["name"]);
         } else {
           console.log("User not found, redirecting to login.");
         }
+        console.log("User name fetched successfully:", userName);
     } catch(error){
       console.log(error)
     }

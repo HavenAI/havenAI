@@ -42,6 +42,7 @@ export default function TalkScreen() {
 
     setIsBotTyping(true);
     try {
+      console.log("Sending message to backend:", trimmed);
       const res = await fetch(`${API_BASE_URL}/chat/send`, {
         method: 'POST',
         headers: {
@@ -53,6 +54,7 @@ export default function TalkScreen() {
 
       if (!res.ok) {
         const errorText = await res.text();
+        
         console.error("Response failed:", res.status, errorText);
         throw new Error("Backend error");
       }

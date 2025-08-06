@@ -68,6 +68,13 @@ function LoggingCravingVaping({topInset }) {
     setShowForm(false);
 
     try{
+      console.log("Submitting log:", {
+        timestamp: selectedDateTime.toISOString(),
+        mood: newLog.feeling,
+        location: newLog.location,
+        intensity: 0,
+        type: entryType
+      });
       const response = await fetch(`${API_BASE_URL}/log/craving`, {
         method: 'POST',
         headers: {
