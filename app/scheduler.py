@@ -56,7 +56,7 @@ def rule_based_trigger(user_id):
 
 scheduler = BackgroundScheduler(timezone="UTC")
 
-def schedule_daily_checkin():
+def schedule_daily_checkin(user_id=None):
     scheduler.start()
     schedule_checkins_from_onboarding()
     
