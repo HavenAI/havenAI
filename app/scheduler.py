@@ -55,10 +55,16 @@ def rule_based_trigger(user_id):
     # Add your logic here
 
 scheduler = BackgroundScheduler(timezone="UTC")
+scheduler_started = False
 
 def schedule_daily_checkin(user_id=None):
-    scheduler.start()
-    schedule_checkins_from_onboarding()
+    global scheduler_started
+    if not scheduler_started:
+        scheduler.start()
+        scheduler_started = True
+
+    if user_id:
+        pass
     
 
 
